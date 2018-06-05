@@ -2,12 +2,37 @@
 <html>
 <head>
   <title>Canvas</title>
+  <style type="text/css">
+  	/*#canvas1{
+  		position: relative;
+		left: 500px;
+  	}
+  	#canvas2{
+  		position: relative;
+		left: 1000px;
+  	}*/
+  </style>
 </head>
 
 <body>
-  <canvas id="canvas" width="1000" height="1000"></canvas>
+  <canvas id="canvas1" width="300" height="200"></canvas>
+  <canvas id="canvas2" width="300" height="200"></canvas>
+  <canvas id="canvas3" width="300" height="200"></canvas>
 
-  <script type="text/javascript">
+
+<script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
+<script type="text/javascript">
+
+  		// (function(doc,$){
+
+  		// 	// 构造函数，接收配置信息
+  		// 	function Time(options){
+
+  		// 	}
+
+  		// })(document,jQuery);
+
+
   		var zero = [[1,1,1,1],
   				   [1,0,0,1],
   				   [1,0,0,1],
@@ -88,13 +113,50 @@
   			        [0,0,0,1],
   			        [1,1,1,1]]
 
+  		var color = ['rgb(255,127,36)','rgb(238,118,33)','rgb(205,102,29)','rgb(139,69,19)',
+  					 'rgb(255,48,48)','rgb(238,44,44)','rgb(205,38,38)','rgb(139,26,26)']
+
+  		var canvas1 = document.getElementById('canvas1');
+  		var canvas2 = document.getElementById('canvas2');
+  		var canvas3 = document.getElementById('canvas3');
+  		var ctx1 = canvas1.getContext('2d');
+  		var ctx2 = canvas2.getContext('2d');
+  		var ctx3 = canvas3.getContext('2d');
+
+
+  		var canvas = [canvas1,canvas2,canvas3];
+  		var ctxs = [ctx1,ctx2,ctx3];
+
+  		var temp = [];
+
+  		init();
   		
+  		function init(){
+  			var date = new Date();
 
-  		var canvas = document.getElementById('canvas');
-  		var ctx = canvas.getContext('2d');
+  			var hours = formatter(date.getHours());
 
+  			var minutes = formatter(date.getMinutes());
 
-  		
+  			var seconds = formatter(date.getSeconds()+1);	
+
+  			var arr = [];
+
+  			arr.push(create(hours));
+  			arr.push(create(minutes));
+  			arr.push(create(seconds));
+
+  			temp = arr;
+
+  			for(var k = 0;k<arr.length;k++){
+  				for(var kk =0; kk<arr[k].length;kk++){
+  					draw_number(arr[k][kk],k,kk);
+  				}
+	  			
+	  		}
+
+  		}
+
   		setInterval(function(){
 
   			var date = new Date();
@@ -111,19 +173,55 @@
 
   			var arr = [];
 
-  			arr = create(hours,minutes,seconds);
+  			arr.push(create(hours));
+  			arr.push(create(minutes));
+  			arr.push(create(seconds));
 
-  			console.log(arr.length);
+  			// arr = create(hours,minutes,seconds);
+
+  			checkChangeAndRefreshCanvas(arr);
+
+  			temp = arr;
+  			// ctx.clearRect(0,0,canvas.width,canvas.height);  
 
 
-  			ctx.clearRect(0,0,canvas.width,canvas.height);  
+  			// 绘制每个cavas的图形
 
-  			for(var k = 0;k<arr.length;k++){
-	  			draw_number(arr[k],k);
-	  		}
+  			// for(var k = 0;k<arr.length;k++){
+  			// 	for(var kk =0; kk<arr[k].length;kk++){
+  			// 		draw_number(arr[k][kk],k,kk);
+  			// 	}
+	  			
+	  		// }
 
   		},1000)
   		
+
+
+
+  		function checkChangeAndRefreshCanvas(arr){
+
+  			if(temp.length == 0){
+  				for(let i =0 ;i<ctxs.length;i++){
+  					// 清空画布
+  					ctxs[i].clearRect(0,0,canvas[i].width,canvas[i].height);
+  				}
+  				return ;
+  			}
+
+  			for(let i = 0;i<temp.length;i++){
+
+  				console.log(temp[i].toString(),arr[i].toString())
+  				if(temp[i].toString() != arr[i].toString()){
+  					// 不相等 则需要刷新相应的canvas块
+  					ctxs[i].clearRect(0,0,canvas[i].width,canvas[i].height);
+  					for(let j = 0 ; j < arr[i].length;j++){
+  						draw_number(arr[i][j],i,j);
+  					}
+  				}
+  			}
+  		}
+
   		function create(){
   			// console.log(arguments);
   			var arr = [];
@@ -131,6 +229,7 @@
   			for(var i = 0;i<arguments.length;i++){
   				var numbers = arguments[i].split('');
   				for(var j = 0;j<numbers.length;j++){
+
   					switch(numbers[j]){
   						case '0':
   							arr.push(zero);
@@ -175,20 +274,21 @@
   				return ''+i;
   			else
   				return ''+0+i;
-
   		}
 
   		// 绘制单个数字或字符
-  		function draw_number(arr,k) {
+  		function draw_number(arr,whitch,k) {
   			// body...
   			for(var i = 0 ; i < arr.length; i++){
   			for(var j = 0 ; j < arr[i].length; j++){
   				if(arr[i][j] === 1){
   					
-  					ctx.beginPath();   
-  					ctx.fillStyle = 'rgb('+Math.ceil(Math.random()*255)+','+Math.ceil(Math.random()*255)+','+ Math.ceil(Math.random()*255)+')'; 
-  					ctx.arc((j+1)*25+k*120,(i+1)*25,10,0,360,false); 
-  					ctx.fill();   
+  					// 绘制实心圆
+  					ctxs[whitch].beginPath();   
+  					ctxs[whitch].fillStyle = color[Math.floor(Math.random()*8)];
+  					ctxs[whitch].arc((j+1)*25+k*120,(i+1)*25,10,0,360,false); 
+  					ctxs[whitch].fill();   
+  					// 绘制结束
   					
   				}
   				
