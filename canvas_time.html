@@ -15,11 +15,8 @@
 </head>
 
 <body>
-  <canvas id="canvas1" width="300" height="200"></canvas>
-  <canvas id="canvas2" width="300" height="200"></canvas>
-  <canvas id="canvas3" width="300" height="200"></canvas>
-
-
+<canvas id="canvas" width="1000" height="500"></canvas>
+ 
 <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
 <script type="text/javascript">
 
@@ -32,133 +29,150 @@
 
   		// })(document,jQuery);
 
+      var balls = [];
 
-  		var zero = [[1,1,1,1],
-  				   [1,0,0,1],
-  				   [1,0,0,1],
-  				   [1,0,0,1],
-  				   [1,0,0,1],
-  			       [1,0,0,1],
-  			       [1,1,1,1]]
+  		var zero = [
+                  [1,1,1],
+  				        [1,0,1],
+  				        [1,0,1],
+  				        [1,0,1],
+  				        [1,0,1],
+  			          [1,0,1],
+  			          [1,1,1]]
 
-  		var one = [[0,0,0,1],
-  				   [0,0,0,1],
-  				   [0,0,0,1],
-  				   [0,0,0,1],
-  				   [0,0,0,1],
-  			       [0,0,0,1],
-  			       [0,0,0,1]]
+  		var one = [
+                  [0,0,1],
+  				        [0,0,1],
+  				        [0,0,1],
+  				        [0,0,1],
+  				        [0,0,1],
+  			          [0,0,1],
+  			          [0,0,1]]
 
-  		var two = [[1,1,1,1],
-  				    [0,0,0,1],
-  				    [0,0,0,1],
-  				    [1,1,1,1],
-  				    [1,0,0,0],
-  			        [1,0,0,0],
-  			        [1,1,1,1]]
+  		var two = [
+                  [1,1,1],
+  				        [0,0,1],
+  				        [0,0,1],
+  				        [1,1,1],
+  				        [1,0,0],
+  			          [1,0,0],
+  			          [1,1,1]]
 
-  		var three = [[1,1,1,1],
-  				    [0,0,0,1],
-  				    [0,0,0,1],
-  				    [1,1,1,1],
-  				    [0,0,0,1],
-  			        [0,0,0,1],
-  			        [1,1,1,1]]
+  		var three = [
+                    [1,1,1],
+    				        [0,0,1],
+    				        [0,0,1],
+    				        [1,1,1],
+    				        [0,0,1],
+    			          [0,0,1],
+    			          [1,1,1]]
 
-  		var four = [[1,0,0,1],
-  				    [1,0,0,1],
-  				    [1,0,0,1],
-  				    [1,1,1,1],
-  				    [0,0,0,1],
-  			        [0,0,0,1],
-  			        [0,0,0,1]]
+  		var four = [
+                  [1,0,1],
+  				        [1,0,1],
+  				        [1,0,1],
+  				        [1,1,1],
+  				        [0,0,1],
+  			          [0,0,1],
+  			          [0,0,1]]
 
-  		var five = [[1,1,1,1],
-  				    [1,0,0,0],
-  				    [1,0,0,0],
-  				    [1,1,1,1],
-  				    [0,0,0,1],
-  			        [0,0,0,1],
-  			        [1,1,1,1]]
+  		var five = [
+                  [1,1,1],
+  				        [1,0,0],
+  				        [1,0,0],
+  				        [1,1,1],
+  				        [0,0,1],
+  			          [0,0,1],
+  			          [1,1,1]]
 
-  		var six = [[1,1,1,1],
-  				    [1,0,0,0],
-  				    [1,0,0,0],
-  				    [1,1,1,1],
-  				    [1,0,0,1],
-  			        [1,0,0,1],
-  			        [1,1,1,1]]
+  		var six = [
+                  [1,1,1],
+  				        [1,0,0],
+  				        [1,0,0],
+  				        [1,1,1],
+  				        [1,0,1],
+  			          [1,0,1],
+  			          [1,1,1]]
 
-  		var seven = [[1,1,1,1],
-  				    [0,0,0,1],
-  				    [0,0,0,1],
-  				    [0,0,0,1],
-  				    [0,0,0,1],
-  			        [0,0,0,1],
-  			        [0,0,0,1]]
+  		var seven = [
+                  [1,1,1],
+  				        [0,0,1],
+  				        [0,0,1],
+  				        [0,0,1],
+  				        [0,0,1],
+  			          [0,0,1],
+  			          [0,0,1]]
 
-  		var eight = [[1,1,1,1],
-  				    [1,0,0,1],
-  				    [1,0,0,1],
-  				    [1,1,1,1],
-  				    [1,0,0,1],
-  			        [1,0,0,1],
-  			        [1,1,1,1]]
+  		var eight = [
+                    [1,1,1],
+  				          [1,0,1],
+  				          [1,0,1],
+  				          [1,1,1],
+  				          [1,0,1],
+  			            [1,0,1],
+  			            [1,1,1]]
 
-  		var nine = [[1,1,1,1],
-  				    [1,0,0,1],
-  				    [1,0,0,1],
-  				    [1,1,1,1],
-  				    [0,0,0,1],
-  			        [0,0,0,1],
-  			        [1,1,1,1]]
+  		var nine = [
+                  [1,1,1],
+  				        [1,0,1],
+  				        [1,0,1],
+  				        [1,1,1],
+  				        [0,0,1],
+  			          [0,0,1],
+  			          [1,1,1]]
+
+      var dott = [
+                  [0,0,0],
+                  [0,1,0],
+                  [0,0,0],
+                  [0,0,0],
+                  [0,0,0],
+                  [0,1,0],
+                  [0,0,0]]
 
   		var color = ['rgb(255,127,36)','rgb(238,118,33)','rgb(205,102,29)','rgb(139,69,19)',
   					 'rgb(255,48,48)','rgb(238,44,44)','rgb(205,38,38)','rgb(139,26,26)']
 
-  		var canvas1 = document.getElementById('canvas1');
-  		var canvas2 = document.getElementById('canvas2');
-  		var canvas3 = document.getElementById('canvas3');
-  		var ctx1 = canvas1.getContext('2d');
-  		var ctx2 = canvas2.getContext('2d');
-  		var ctx3 = canvas3.getContext('2d');
-
-
-  		var canvas = [canvas1,canvas2,canvas3];
-  		var ctxs = [ctx1,ctx2,ctx3];
-
+  		var canvas1 = document.getElementById('canvas');
+  		
+  		var ctx = canvas1.getContext('2d');
+  	
   		var temp = [];
 
-  		init();
+  		// init();
   		
-  		function init(){
-  			var date = new Date();
+  		// function init(){
+  		// 	var date = new Date();
 
-  			var hours = formatter(date.getHours());
+  		// 	var hours = formatter(date.getHours());
 
-  			var minutes = formatter(date.getMinutes());
+  		// 	var minutes = formatter(date.getMinutes());
 
-  			var seconds = formatter(date.getSeconds()+1);	
+  		// 	var seconds = formatter(date.getSeconds()+1);	
 
-  			var arr = [];
+  		// 	var arr = [];
 
-  			arr.push(create(hours));
-  			arr.push(create(minutes));
-  			arr.push(create(seconds));
+  		// 	arr.push(create(hours));
+    //     arr.push(dott);
+  		// 	arr.push(create(minutes));
+    //     arr.push(dott);
+  		// 	arr.push(create(seconds));
 
-  			temp = arr;
+  		// 	temp = arr;
 
-  			for(var k = 0;k<arr.length;k++){
-  				for(var kk =0; kk<arr[k].length;kk++){
-  					draw_number(arr[k][kk],k,kk);
-  				}
+  		// 	for(var k = 0;k<arr.length;k++){
+  		// 		for(var kk =0; kk<arr[k].length;kk++){
+  		// 			draw_number(arr[k][kk],kk);
+  		// 		}
 	  			
-	  		}
+	  	// 	}
 
-  		}
+  		// }
 
   		setInterval(function(){
 
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+
   			var date = new Date();
 
   			var hours = formatter(date.getHours());
@@ -167,37 +181,80 @@
 
   			var seconds = formatter(date.getSeconds()+1);	
 
-  			//console.log(hours+':'+minutes+':'+seconds);
-
-  			// 生成数组
-
   			var arr = [];
 
-  			arr.push(create(hours));
-  			arr.push(create(minutes));
-  			arr.push(create(seconds));
+  			arr = create(hours,minutes,seconds);
 
-  			// arr = create(hours,minutes,seconds);
 
-  			checkChangeAndRefreshCanvas(arr);
+        
 
-  			temp = arr;
-  			// ctx.clearRect(0,0,canvas.width,canvas.height);  
-
+  			 
 
   			// 绘制每个cavas的图形
+  			for(var k = 0;k<arr.length;k++){
+  					draw_number(arr[k],k);
+	  		}
+        addBall(arr);
 
-  			// for(var k = 0;k<arr.length;k++){
-  			// 	for(var kk =0; kk<arr[k].length;kk++){
-  			// 		draw_number(arr[k][kk],k,kk);
-  			// 	}
-	  			
-	  		// }
+        temp = arr;
 
-  		},1000)
+  		},50)
   		
+      function addBall(arr){
+        if(temp.length == 0)
+          return;
 
+        for(let i = 0;i<arr.length;i++){
 
+          if(temp[i].toString() != arr[i].toString()){
+            // 不相等 变化
+            var curr_arr = arr[i];
+            for(var ii = 0 ; ii < curr_arr.length; ii++){
+              for(var j = 0 ; j < curr_arr[ii].length; j++){
+                
+                if(curr_arr[ii][j] == 1){
+                  // ctx.beginPath();   
+                  // ctx.fillStyle = '#000080';
+                  // ctx.arc((j+1+k*3)*22,(i+1)*20,10,0,360,false); 
+                  // ctx.fill();   
+                  var ball = {
+                    offsetX:(j+1+i*3)*22,
+                    offsetY:(ii+1)*20,
+                    r:10,
+                    fillStyle:'red'
+                  }
+                  balls.push(ball);
+                
+                
+                }
+
+              }
+            }
+            
+          }
+        }
+
+        renderBall();
+        updateBall();
+
+      }
+
+      function renderBall(){
+        
+        for(let i = 0;i<balls.length;i++){
+          ctx.beginPath();
+          ctx.fillStyle = balls[i].fillStyle;
+          ctx.arc(balls[i].offsetX,balls[i].offsetY,balls[i].r,0,360,false);
+          ctx.fill();
+        }
+      }
+
+      function updateBall(){
+        
+        for(let i = 0 ;i<balls.length;i++){
+          balls[i].offsetY = balls[i].offsetY + 15;
+        }
+      }
 
   		function checkChangeAndRefreshCanvas(arr){
 
@@ -211,7 +268,7 @@
 
   			for(let i = 0;i<temp.length;i++){
 
-  				console.log(temp[i].toString(),arr[i].toString())
+  				
   				if(temp[i].toString() != arr[i].toString()){
   					// 不相等 则需要刷新相应的canvas块
   					ctxs[i].clearRect(0,0,canvas[i].width,canvas[i].height);
@@ -228,6 +285,11 @@
 
   			for(var i = 0;i<arguments.length;i++){
   				var numbers = arguments[i].split('');
+
+          if(i!=0){
+            arr.push(dott);
+          }
+
   				for(var j = 0;j<numbers.length;j++){
 
   					switch(numbers[j]){
@@ -277,24 +339,24 @@
   		}
 
   		// 绘制单个数字或字符
-  		function draw_number(arr,whitch,k) {
+  		function draw_number(arr,k) {
   			// body...
+
   			for(var i = 0 ; i < arr.length; i++){
-  			for(var j = 0 ; j < arr[i].length; j++){
-  				if(arr[i][j] === 1){
+  			  for(var j = 0 ; j < arr[i].length; j++){
+  				  if(arr[i][j] === 1){
+    					// 绘制实心圆
+    					ctx.beginPath();   
+    					ctx.fillStyle = '#000080';
+    					ctx.arc((j+1+k*3)*22,(i+1)*20,10,0,360,false); 
+    					ctx.fill();   
+    					// 绘制结束
   					
-  					// 绘制实心圆
-  					ctxs[whitch].beginPath();   
-  					ctxs[whitch].fillStyle = color[Math.floor(Math.random()*8)];
-  					ctxs[whitch].arc((j+1)*25+k*120,(i+1)*25,10,0,360,false); 
-  					ctxs[whitch].fill();   
-  					// 绘制结束
-  					
-  				}
+  				  }
   				
 
-  			}
-  		}
+  			  }
+  		  }
   		}
 
   </script>
