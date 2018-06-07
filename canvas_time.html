@@ -16,10 +16,11 @@
 
 <body>
 <canvas id="canvas" width="1000" height="500"></canvas>
+
  
 <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
 <script type="text/javascript">
-
+     
   		// (function(doc,$){
 
   		// 	// 构造函数，接收配置信息
@@ -32,110 +33,112 @@
       var balls = [];
 
   		var zero = [
-                  [1,1,1],
-  				        [1,0,1],
-  				        [1,0,1],
-  				        [1,0,1],
-  				        [1,0,1],
-  			          [1,0,1],
-  			          [1,1,1]]
+                  [0,1,1,1,0],
+  				        [1,0,0,0,1],
+  				        [1,0,0,1,1],
+  				        [1,0,1,0,1],
+  				        [1,1,0,0,1],
+  			          [1,0,0,0,1],
+  			          [0,1,1,1,0]]
 
   		var one = [
-                  [0,0,1],
-  				        [0,0,1],
-  				        [0,0,1],
-  				        [0,0,1],
-  				        [0,0,1],
-  			          [0,0,1],
-  			          [0,0,1]]
+                  [0,0,1,0,0],
+                  [0,1,1,0,0],
+                  [0,0,1,0,0],
+                  [0,0,1,0,0],
+                  [0,0,1,0,0],
+                  [0,0,1,0,0],
+                  [0,1,1,1,0]]
 
   		var two = [
-                  [1,1,1],
-  				        [0,0,1],
-  				        [0,0,1],
-  				        [1,1,1],
-  				        [1,0,0],
-  			          [1,0,0],
-  			          [1,1,1]]
+                  [0,1,1,1,0],
+                  [1,0,0,0,1],
+                  [0,0,0,0,1],
+                  [0,0,0,1,0],
+                  [0,0,1,0,0],
+                  [0,1,0,0,0],
+                  [1,1,1,1,1]]
 
   		var three = [
-                    [1,1,1],
-    				        [0,0,1],
-    				        [0,0,1],
-    				        [1,1,1],
-    				        [0,0,1],
-    			          [0,0,1],
-    			          [1,1,1]]
+                  [0,1,1,1,0],
+                  [1,0,0,0,1],
+                  [0,0,0,0,1],
+                  [0,0,1,1,0],
+                  [0,0,0,0,1],
+                  [1,0,0,0,1],
+                  [0,1,1,1,0]]
 
   		var four = [
-                  [1,0,1],
-  				        [1,0,1],
-  				        [1,0,1],
-  				        [1,1,1],
-  				        [0,0,1],
-  			          [0,0,1],
-  			          [0,0,1]]
+                  [0,0,0,1,0],
+                  [0,0,1,1,0],
+                  [0,1,0,1,0],
+                  [1,0,0,1,0],
+                  [1,1,1,1,1],
+                  [0,0,0,1,0],
+                  [0,0,0,1,0]]
 
   		var five = [
-                  [1,1,1],
-  				        [1,0,0],
-  				        [1,0,0],
-  				        [1,1,1],
-  				        [0,0,1],
-  			          [0,0,1],
-  			          [1,1,1]]
+                  [1,1,1,1,1],
+                  [1,0,0,0,0],
+                  [1,1,1,1,0],
+                  [0,0,0,0,1],
+                  [0,0,0,0,1],
+                  [1,0,0,0,1],
+                  [0,1,1,1,0]]
 
   		var six = [
-                  [1,1,1],
-  				        [1,0,0],
-  				        [1,0,0],
-  				        [1,1,1],
-  				        [1,0,1],
-  			          [1,0,1],
-  			          [1,1,1]]
+                  [0,1,1,1,0],
+                  [1,0,0,0,1],
+                  [1,0,0,0,0],
+                  [1,1,1,1,0],
+                  [1,0,0,0,1],
+                  [1,0,0,0,1],
+                  [0,1,1,1,0]]
 
   		var seven = [
-                  [1,1,1],
-  				        [0,0,1],
-  				        [0,0,1],
-  				        [0,0,1],
-  				        [0,0,1],
-  			          [0,0,1],
-  			          [0,0,1]]
+                  [1,1,1,1,1],
+                  [0,0,0,0,1],
+                  [0,0,0,1,0],
+                  [0,0,1,0,0],
+                  [0,0,1,0,0],
+                  [0,1,0,0,0],
+                  [1,0,0,0,0]]
 
   		var eight = [
-                    [1,1,1],
-  				          [1,0,1],
-  				          [1,0,1],
-  				          [1,1,1],
-  				          [1,0,1],
-  			            [1,0,1],
-  			            [1,1,1]]
+                  [0,1,1,1,0],
+                  [1,0,0,0,1],
+                  [1,0,0,0,1],
+                  [0,1,1,1,0],
+                  [1,0,0,0,1],
+                  [1,0,0,0,1],
+                  [0,1,1,1,0]]
 
   		var nine = [
-                  [1,1,1],
-  				        [1,0,1],
-  				        [1,0,1],
-  				        [1,1,1],
-  				        [0,0,1],
-  			          [0,0,1],
-  			          [1,1,1]]
+                  [0,1,1,1,0],
+                  [1,0,0,0,1],
+                  [1,0,0,0,1],
+                  [0,1,1,1,1],
+                  [0,0,0,0,1],
+                  [1,0,0,0,1],
+                  [0,1,1,1,0]]
 
       var dott = [
-                  [0,0,0],
-                  [0,1,0],
-                  [0,0,0],
-                  [0,0,0],
-                  [0,0,0],
-                  [0,1,0],
-                  [0,0,0]]
+                  [0,0,0,0,0],
+                  [0,0,1,0,0],
+                  [0,0,1,0,0],
+                  [0,0,0,0,0],
+                  [0,0,1,0,0],
+                  [0,0,1,0,0],
+                  [0,0,0,0,0]]
 
   		var color = ['rgb(255,127,36)','rgb(238,118,33)','rgb(205,102,29)','rgb(139,69,19)',
   					 'rgb(255,48,48)','rgb(238,44,44)','rgb(205,38,38)','rgb(139,26,26)']
 
   		var canvas1 = document.getElementById('canvas');
-  		
+  	
   		var ctx = canvas1.getContext('2d');
+
+      var u = 0.85;
   	
   		var temp = [];
 
@@ -198,7 +201,7 @@
 
         temp = arr;
 
-  		},50)
+  		},10)
   		
       function addBall(arr){
         if(temp.length == 0)
@@ -213,18 +216,22 @@
               for(var j = 0 ; j < curr_arr[ii].length; j++){
                 
                 if(curr_arr[ii][j] == 1){
-                  // ctx.beginPath();   
+                  // ctx.beginPath();
                   // ctx.fillStyle = '#000080';
                   // ctx.arc((j+1+k*3)*22,(i+1)*20,10,0,360,false); 
-                  // ctx.fill();   
+                  // ctx.fill();
                   var ball = {
-                    offsetX:(j+1+i*3)*22,
+                    offsetX:(j+1+i*3)*22+i*50,
                     offsetY:(ii+1)*20,
                     r:10,
-                    fillStyle:'red'
+                    g:0.06+Math.random()*0.06,
+                    fillStyle:color[Math.floor(Math.random()*8)],
+                    vx:Math.pow(-1, Math.ceil(Math.random()*10))*Math.random(),
+                    vy:-1,
+                    vyy:-5
                   }
                   balls.push(ball);
-                
+                  
                 
                 }
 
@@ -250,10 +257,48 @@
       }
 
       function updateBall(){
+
+        var remove_index = [];
+
+        var l = balls.length
         
         for(let i = 0 ;i<balls.length;i++){
-          balls[i].offsetY = balls[i].offsetY + 15;
+
+          balls[i].offsetX = balls[i].offsetX + balls[i].vx;
+          balls[i].offsetY = balls[i].offsetY + balls[i].vy;
+          balls[i].vy = balls[i].vy + balls[i].g;
+
+          if(balls[i].offsetX < -balls[i].r || balls[i].offsetX > canvas.width+balls[i].r){
+            // 需要移除该彩色球
+            
+            if(!remove_index.includes(i)){
+              remove_index.push(i);
+            }
+
+
+          }
+
+          if(balls[i].offsetY + balls[i].r >=  canvas.height){
+            if(balls[i].vx<0)
+              balls[i].vx = balls[i].vx - 0.1;
+            else
+              balls[i].vx = balls[i].vx + 0.1;
+            balls[i].offsetY = canvas.height - balls[i].r
+            balls[i].vyy = balls[i].vyy * u;
+            balls[i].vy = balls[i].vyy;
+          }
+
+          
         }
+        var sort = remove_index.map(function(x1,x2){
+          return x1-x2;
+        })
+        if(sort.length!=0)
+        
+        for(var k = 0; k < sort.length; k++){
+          balls.splice(sort[k]-k,1);
+        }
+
       }
 
   		function checkChangeAndRefreshCanvas(arr){
@@ -341,14 +386,14 @@
   		// 绘制单个数字或字符
   		function draw_number(arr,k) {
   			// body...
-
+        
   			for(var i = 0 ; i < arr.length; i++){
   			  for(var j = 0 ; j < arr[i].length; j++){
   				  if(arr[i][j] === 1){
     					// 绘制实心圆
     					ctx.beginPath();   
     					ctx.fillStyle = '#000080';
-    					ctx.arc((j+1+k*3)*22,(i+1)*20,10,0,360,false); 
+    					ctx.arc((j+1+k*3)*22+50*k,(i+1)*20,10,0,360,false); 
     					ctx.fill();   
     					// 绘制结束
   					
@@ -358,6 +403,8 @@
   			  }
   		  }
   		}
+
+
 
   </script>
 
