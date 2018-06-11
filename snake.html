@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>贪吃蛇</title>
+	<style>
+		.wrapper{
+			width: 500px;
+			height: 500px;
+			position: fixed;
+			border: 2px solid #b9bcb9;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+		}
+		#game{
+			position: absolute;
+			z-index: 9999;
+			left: 0;
+			top: 0;
+		}
+	</style>
+</head>
+<body>
+<div class="wrapper">
+	<canvas id='gameBg' width="500" height="500"></canvas>
+	<canvas id='game' width="500" height="500"></canvas>
+</div>
+
+</body>
+
+<script>
+	
+	var gameBg_canvas = document.getElementById('gameBg');
+
+	var gameBg = gameBg_canvas.getContext('2d');
+
+    gameBg.fillStyle = '#e9e9e9';
+    gameBg.fillRect(0,0,500,500);
+
+    var game_canvas = document.getElementById('game');
+
+    var game = game_canvas.getContext('2d');
+
+
+
+	var step = 20;
+
+	var sanke = [
+		{
+		    offsetX:100 + 20 * Math.ceil(Math.random()*15),
+			offsetY:100 + 20 * Math.ceil(Math.random()*15),
+			w:20,
+			h:20
+		}
+	];
+
+
+
+    game.fillStyle = '#8E8E38';
+	
+    game.fillRect(sanke[0].offsetX,sanke[0].offsetY,sanke[0].w,sanke[0].h);
+
+	document.addEventListener('keydown',function (ev) {
+		switch(ev.keyCode){
+			// 左箭头
+			case 37:
+				goLeft();
+			// 上箭头
+			case 38:
+			    goUp();
+			// 右箭头
+			case 39:
+			    goRigth();
+			// 下箭头
+			case 40:
+			    goDown();
+
+		}
+	})
+	
+	function goLeft() {
+		
+    }
+    function goTop() {
+
+    }
+    function goRight() {
+
+    }
+    function goDown() {
+
+    }
+
+
+	function startGame() {
+
+		setInterval(function () {
+			for (let i = 0;i<sanke.length;i++){
+
+			}
+        },50)
+
+    }
+
+
+
+</script>
+</html>
