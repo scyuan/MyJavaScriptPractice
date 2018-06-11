@@ -18,9 +18,48 @@
 			left: 0;
 			top: 0;
 		}
+		.info{
+			width: 500px;
+			height: 100px;
+			position: fixed;
+			display: flex;
+			left: 50%;
+			top: 5%;
+			color: #b9bcb9;
+			align-items: center;
+			transform: translate(-50%,0);
+			justify-content: center;
+		}
+		.btn{
+			width: 100px;
+			height: 60px;
+			border-radius: 30px;
+			border: 2px solid #b9bcb9;
+			color: #b9bcb9;
+			background: #e9e9e9;
+			line-height: 60px;
+			text-align: center;
+			cursor: pointer;
+		}
+		.score{
+			font-size: 60px;
+			margin: 0 30px;
+		}
+		.hide{
+			display: none;
+		}
 	</style>
 </head>
 <body>
+
+<div class="info">
+	<span class="btn" id="start">开始游戏</span>
+	<span class="hide btn play" id="pause">暂停游戏</span>
+	<span class="hide score play">0</span>
+	<span class="hide btn play" id="restart">重新开始</span>
+
+</div>
+
 <div class="wrapper">
 	<canvas id='gameBg' width="500" height="500"></canvas>
 	<canvas id='game' width="500" height="500"></canvas>
@@ -28,35 +67,38 @@
 
 </body>
 
+<script src="js/jquery-3.2.0.min.js"></script>
 <script>
-	
+
+
+
+	// 背景画布
 	var gameBg_canvas = document.getElementById('gameBg');
-
 	var gameBg = gameBg_canvas.getContext('2d');
-
     gameBg.fillStyle = '#e9e9e9';
     gameBg.fillRect(0,0,500,500);
 
-    var game_canvas = document.getElementById('game');
 
+    // 游戏画布（渲染贪吃蛇和食物）
+    var game_canvas = document.getElementById('game');
     var game = game_canvas.getContext('2d');
 
+    // 运动方向
 	var curr_direction = 'right';
 
-	var step = 20;
-
+	// 运动时钟
 	var timer = null;
 
+	// 游戏级别
 	var level = 1;
 
-	var food = {
-        offsetX:100 + 20 * Math.ceil(Math.random()*15),
-        offsetY:100 + 20 * Math.ceil(Math.random()*15),
+	// 游戏分数
+	var score = 0;
 
-        w:20,
-        h:20
-	}
+	// 防止误撞
+	var isChangingDirec = false;
 
+	//蛇身数组
 	var snake = [
 		{
 		    offsetX:100 + 20 * Math.ceil(Math.random()*15),
@@ -65,12 +107,23 @@
 			h:20
 		}
 	];
+    // 渲染蛇头
+    game.fillStyle = '#8E8E38'
+    game.fillRect(snake[0].offsetX,snake[0].offsetY,snake[0].w,snake[0].h);
 
+    // 初始化食物
+    var food = createFood();
 
+    // 渲染食物
     game.fillStyle = 'red'
     game.fillRect(food.offsetX,food.offsetY,food.w,food.h);
 
+
+    // 监听上下左右箭头按键
 	document.addEventListener('keydown',function (ev) {
+        if(isChangingDirec){
+            return ;
+		}
 
 		switch(ev.keyCode){
 			// 左箭头
@@ -153,6 +206,8 @@
 	function startGame() {
 
 		timer = setInterval(function () {
+            isChangingDirec = true;
+
             // 判断碰撞和出界
             // 判断出界
 			var next = getNext();
@@ -163,6 +218,7 @@
                 return ;
 
             }
+
             if(checkXY(next.offsetX,next.offsetY)){
                 clearInterval(timer);
                 alert('Game Over 撞到自己');
@@ -183,11 +239,15 @@
                     w:20,
                     h:20
 				});
-				console.log(snake);
+				score = score + 5;
+
+				$('.score').text(score);
+
 				//	移除food并重新生成一个food
-                createFood();
+                food = createFood();
 			}
 
+            // 写在吃到食物之后，如果不是，会有bug，虽然不影响运行
             game.fillStyle = '#8E8E38'
             switch(curr_direction){
                 case 'left':
@@ -210,11 +270,12 @@
 			for(let i = 0;i<snake.length;i++){
                 game.fillRect(snake[i].offsetX,snake[i].offsetY,snake[i].w,snake[i].h);
 			}
-
-        },100)
+			isChangingDirec = false;
+        },300)
 
     }
 
+    // 生成食物
     function createFood(){
 	    var offsetX = 0;
 	    var offsetY = 0;
@@ -223,7 +284,7 @@
             offsetY = 100 + 20 * Math.ceil(Math.random()*15);
 		}while(checkXY(offsetX,offsetY))
 
-		food = {
+		return {
 	        offsetX:offsetX,
 			offsetY:offsetY,
             w:20,
@@ -277,7 +338,16 @@
                 };
         }
     }
-    startGame();
+
+    $('#start').on('click',function () {
+        $('#start').addClass('hide');
+		$('.play').removeClass('hide');
+		startGame();
+    })
+
+	$('#pause').on('click',function () {
+		clearInterval(timer);
+    })
 
 
 </script>
