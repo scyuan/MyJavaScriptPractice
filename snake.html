@@ -41,11 +41,23 @@
 
     var game = game_canvas.getContext('2d');
 
-
+	var curr_direction = 'right';
 
 	var step = 20;
 
-	var sanke = [
+	var timer = null;
+
+	var level = 1;
+
+	var food = {
+        offsetX:100 + 20 * Math.ceil(Math.random()*15),
+        offsetY:100 + 20 * Math.ceil(Math.random()*15),
+
+        w:20,
+        h:20
+	}
+
+	var snake = [
 		{
 		    offsetX:100 + 20 * Math.ceil(Math.random()*15),
 			offsetY:100 + 20 * Math.ceil(Math.random()*15),
@@ -55,53 +67,217 @@
 	];
 
 
-
-    game.fillStyle = '#8E8E38';
-	
-    game.fillRect(sanke[0].offsetX,sanke[0].offsetY,sanke[0].w,sanke[0].h);
+    game.fillStyle = 'red'
+    game.fillRect(food.offsetX,food.offsetY,food.w,food.h);
 
 	document.addEventListener('keydown',function (ev) {
+
 		switch(ev.keyCode){
 			// 左箭头
 			case 37:
-				goLeft();
+			    if(curr_direction == 'right'){
+			        return ;
+				}
+                curr_direction = 'left';
+			    break;
 			// 上箭头
 			case 38:
-			    goUp();
+			    if(curr_direction == 'down'){
+			        return ;
+				}
+                curr_direction = 'up';
+                break;
 			// 右箭头
 			case 39:
-			    goRigth();
+			    if(curr_direction == 'left'){
+			        return ;
+				}
+                curr_direction = 'right';
+                break;
 			// 下箭头
 			case 40:
-			    goDown();
-
+			    if(curr_direction == 'up'){
+			        return ;
+				}
+                curr_direction = 'down';
+                break;
 		}
 	})
 	
 	function goLeft() {
-		
+	    if(snake.length == 1) {
+            snake[0].offsetX = snake[0].offsetX - 20;
+            return;
+        }
+		var this_snake = snake.pop();
+        this_snake.offsetX = snake[0].offsetX - 20;
+        this_snake.offsetY = snake[0].offsetY;
+        snake.unshift(this_snake);
     }
-    function goTop() {
+    function goUp() {
+        if(snake.length == 1){
+            snake[0].offsetY = snake[0].offsetY - 20;
+            return;
+        }
 
+        var this_snake = snake.pop();
+        this_snake.offsetY = snake[0].offsetY - 20;
+        this_snake.offsetX = snake[0].offsetX;
+        snake.unshift(this_snake);
     }
     function goRight() {
+        if(snake.length == 1){
+            snake[0].offsetX = snake[0].offsetX + 20;
 
+            return;
+        }
+
+        var this_snake = snake.pop();
+
+        this_snake.offsetX = snake[0].offsetX + 20;
+        this_snake.offsetY = snake[0].offsetY;
+        snake.unshift(this_snake);
     }
     function goDown() {
-
+        if(snake.length == 1){
+            snake[0].offsetY = snake[0].offsetY + 20;
+            return;
+        }
+        var this_snake = snake.pop();
+        this_snake.offsetY = snake[0].offsetY + 20;
+        this_snake.offsetX = snake[0].offsetX;
+        snake.unshift(this_snake);
     }
 
 
 	function startGame() {
 
-		setInterval(function () {
-			for (let i = 0;i<sanke.length;i++){
+		timer = setInterval(function () {
+            // 判断碰撞和出界
+            // 判断出界
+			var next = getNext();
 
+            if(next.offsetX < 0 || next.offsetX >= game_canvas.width || next.offsetY < 0|| next >= game_canvas.height){
+                clearInterval(timer);
+                alert('Game Over 撞到墙');
+                return ;
+
+            }
+            if(checkXY(next.offsetX,next.offsetY)){
+                clearInterval(timer);
+                alert('Game Over 撞到自己');
+                return ;
 			}
-        },50)
+
+            game.clearRect(0,0,500,500);
+
+            game.fillStyle = 'red'
+            game.fillRect(food.offsetX,food.offsetY,food.w,food.h);
+
+			// 判断吃到果实
+			if(next.offsetX == food.offsetX && next.offsetY == food.offsetY){
+				// 吃食物
+				snake.unshift({
+                    offsetX:food.offsetX,
+                    offsetY:food.offsetY,
+                    w:20,
+                    h:20
+				});
+				console.log(snake);
+				//	移除food并重新生成一个food
+                createFood();
+			}
+
+            game.fillStyle = '#8E8E38'
+            switch(curr_direction){
+                case 'left':
+                    goLeft();
+                    break;
+                // 上箭头
+                case 'up':
+                    goUp();
+                    break;
+                // 右箭头
+                case 'right':
+                    goRight();
+                    break;
+                // 下箭头
+                case 'down':
+                    goDown();
+                    break;
+            }
+
+			for(let i = 0;i<snake.length;i++){
+                game.fillRect(snake[i].offsetX,snake[i].offsetY,snake[i].w,snake[i].h);
+			}
+
+        },100)
 
     }
 
+    function createFood(){
+	    var offsetX = 0;
+	    var offsetY = 0;
+	    do{
+	        offsetX = 100 + 20 * Math.ceil(Math.random()*15);
+            offsetY = 100 + 20 * Math.ceil(Math.random()*15);
+		}while(checkXY(offsetX,offsetY))
+
+		food = {
+	        offsetX:offsetX,
+			offsetY:offsetY,
+            w:20,
+            h:20
+		}
+	}
+
+    function checkXY(x,y){
+	    return snake.some(function (snake_item) {
+			if(snake_item.offsetX == x && snake_item.offsetY == y){
+			    return true
+			}else{
+			    return false
+			}
+        })
+	}
+
+	function getNext() {
+        switch(curr_direction){
+            case 'left':
+                var temp = snake[0].offsetX - 20;
+                return {
+                    offsetX:temp,
+					offsetY:snake[0].offsetY,
+					w:20,
+					h:20
+				};
+            case 'up':
+                var temp = snake[0].offsetY - 20;
+                return {
+                    offsetX:snake[0].offsetX,
+                    offsetY:temp,
+                    w:20,
+                    h:20
+                };
+            case 'right':
+                var temp = snake[0].offsetX + 20;
+                return {
+                    offsetX:temp,
+                    offsetY:snake[0].offsetY,
+                    w:20,
+                    h:20
+                };
+            case 'down':
+                var temp = snake[0].offsetY + 20;
+                return {
+                    offsetX:snake[0].offsetX,
+                    offsetY:temp,
+                    w:20,
+                    h:20
+                };
+        }
+    }
+    startGame();
 
 
 </script>
