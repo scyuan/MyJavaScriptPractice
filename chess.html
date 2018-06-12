@@ -43,6 +43,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            /*transition: all .3s;*/
 
         }
         .chessman1{
@@ -240,27 +241,57 @@
         y:300
     }
 
+    startGame();
 
-    var chessman_1 = [car_1,car_2,horse_1,horse_2,elephant_1,elephant_2,knight_1,knight_2,boss_1,gun_1,gun_2,soldier_1,soldier_2,soldier_3,soldier_4,soldier_5];
-    for(var i = 0; i < chessman_1.length; i++){
-        $('#chess').append('<span class="chessman"><span>'+chessman_1[i].text+'</span></span>');
-        console.log($('#chess').children().length);
-        $('#chess').children().eq($('#chess').children().length-1).css({
-            "top":chessman_1[i].y,
-            "left":chessman_1[i].x
-        });
+    function startGame() {
+        // 初始化棋子
 
+        var chessman_1 = [car_1,car_2,horse_1,horse_2,elephant_1,elephant_2,knight_1,knight_2,boss_1,gun_1,gun_2,soldier_1,soldier_2,soldier_3,soldier_4,soldier_5];
+        for(var i = 0; i < chessman_1.length; i++){
+            $('#chess').append('<span class="chessman"><span>'+chessman_1[i].text+'</span></span>');
+
+            $('#chess').children().eq($('#chess').children().length-1).css({
+                "top":chessman_1[i].y,
+                "left":chessman_1[i].x
+            });
+
+        }
+        var chessman_2 = [car_3,car_4,horse_3,horse_4,elephant_3,elephant_4,knight_3,knight_4,boss_2,gun_3,gun_4,soldier_6,soldier_7,soldier_8,soldier_9,soldier_10];
+        for(var i = 0; i < chessman_2.length; i++){
+            $('#chess').append('<span class="chessman chessman1"><span>'+chessman_2[i].text+'</span></span>');
+
+            $('#chess').children().eq($('#chess').children().length-1).css({
+                "top":chessman_2[i].y,
+                "left":chessman_2[i].x
+            });
+
+        }
     }
-    var chessman_2 = [car_3,car_4,horse_3,horse_4,elephant_3,elephant_4,knight_3,knight_4,boss_2,gun_3,gun_4,soldier_6,soldier_7,soldier_8,soldier_9,soldier_10];
-    for(var i = 0; i < chessman_2.length; i++){
-        $('#chess').append('<span class="chessman chessman1"><span>'+chessman_2[i].text+'</span></span>');
-        console.log($('#chess').children().length);
-        $('#chess').children().eq($('#chess').children().length-1).css({
-            "top":chessman_2[i].y,
-            "left":chessman_2[i].x
-        });
+    var $curr = null
 
-    }
+    // Jquery 方式 监听棋子点击事件
+    $('span.chessman').on('click',function (e) {
+        console.log($(e.target).text());
+
+        $curr = $(e.target).parent()
+
+    })
+    $(document).on('mousemove',function (ev) {
+
+        //console.log(document.getElementById('chess').getBoundingClientRect());
+
+        if($curr !== null){
+            var xx = ev.originalEvent.x || ev.originalEvent.layerX || 0;
+            var yy = ev.originalEvent.y || ev.originalEvent.layerY || 0;
+            $curr.css({
+                "top":yy-document.getElementById('chess').getBoundingClientRect().y,
+                "left":xx-document.getElementById('chess').getBoundingClientRect().x
+            })
+        }
+
+
+    })
+    // JavaScript 原生方式监听棋子点击事件
 
     function drawboard(){
         // 棋盘背景
