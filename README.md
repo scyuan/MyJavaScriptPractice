@@ -11,6 +11,10 @@
 
 #### 最终效果
 
-和效果二差不多类似，但是移除了已经跳出界外的彩色球ß
+和效果二差不多类似，但是移除了已经跳出界外的彩色球
 
 ![](https://ws4.sinaimg.cn/large/006tKfTcly1fs2me7umj9g31is0sgb2a.gif)
+
+### canvas贪吃蛇
+
+![](https://ws1.sinaimg.cn/large/006tNc79ly1fs84oe6lnhg31cq0x44gz.gif)
