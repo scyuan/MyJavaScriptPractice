@@ -56,6 +56,9 @@
             border-radius: 17px;
             border: 1px solid rgb(151,124,102);
         }
+        .high-index{
+            z-index: 999;
+        }
 
     </style>
 </head>
@@ -79,201 +82,569 @@
     drawboard();
 
     var car_1 = {
+        role:'blue',
+        type:'car',
         text:'车',
+        id:'1',
         x:0,
         y:0,
     }
     var car_2 = {
+        role:'blue',
+        type:'car',
         text:'车',
+        id:'2',
         x:400,
         y:0,
     }
     var car_3 = {
+        role:'red',
+        type:'car',
         text:'車',
+        id:'3',
         x:0,
         y:450,
     }
     var car_4 = {
+        role:'red',
+        type:'car',
         text:'車',
+        id:'5',
         x:400,
         y:450,
     }
 
     var horse_1 = {
+        role:'blue',
+        type:'horse',
         text:'马',
+        id:'6',
         x:50,
         y:0,
     }
     var horse_2 = {
+        role:'blue',
+        type:'horse',
         text:'马',
+        id:'7',
         x:350,
         y:0,
     }
     var horse_3 = {
+        role:'red',
+        type:'horse',
         text:'馬',
+        id:'8',
         x:50,
         y:450,
     }
     var horse_4 = {
+        role:'red',
+        type:'horse',
         text:'馬',
         x:350,
+        id:'4',
         y:450,
     }
     var elephant_1 ={
+        role:'blue',
+        type:'elephant',
         text:'象',
+        id:'9',
         x:100,
         y:0,
     }
     var elephant_2 ={
+        role:'blue',
+        type:'elephant',
         text:'象',
         x:300,
+        id:'10',
         y:0,
     }
     var elephant_3 ={
+        role:'red',
+        type:'elephant',
         text:'相',
+        id:'11',
         x:100,
         y:450,
     }
     var elephant_4 ={
+        role:'red',
+        type:'elephant',
         text:'相',
+        id:'12',
         x:300,
         y:450,
     }
     var knight_1 ={
+        role:'blue',
+        type:'knight',
         text:'士',
+        id:'32',
         x:150,
         y:0,
     }
     var knight_2 ={
+        role:'blue',
+        type:'knight',
         text:'士',
+        id:'13',
         x:250,
         y:0,
     }
     var knight_3 ={
+        role:'red',
+        type:'knight',
         text:'士',
+        id:'14',
         x:150,
         y:450,
     }
     var knight_4 ={
+        role:'red',
+        type:'knight',
         text:'士',
         x:250,
+        id:'15',
         y:450,
     }
     var boss_1 = {
+        role:'blue',
+        type:'boss',
         text:'将',
+        id:'16',
         x:200,
         y:0,
     }
     var boss_2 = {
+        role:'red',
+        type:'boss',
         text:'帥',
+        id:'17',
         x:200,
         y:450,
     }
     var gun_1 = {
+
+        role:'blue',
+        type:'gun',
         text:'炮',
+        id:'18',
         x:50,
         y:100
     }
     var gun_2 = {
+        role:'blue',
+        type:'gun',
         text:'炮',
+        id:'19',
         x:350,
         y:100
     }
     var gun_3 = {
+        role:'red',
+        type:'gun',
         text:'炮',
+        id:'20',
         x:50,
         y:350
     }
     var gun_4 = {
+        role:'red',
+        type:'gun',
         text:'炮',
+        id:'21',
         x:350,
         y:350
     }
     var soldier_1 = {
+        role:'blue',
+        type:'soldier',
         text:'卒',
+        id:'22',
         x:0,
         y:150
     }
     var soldier_2 = {
+        role:'blue',
+        type:'soldier',
         text:'卒',
+        id:'23',
         x:100,
         y:150
     }
     var soldier_3 = {
+        role:'blue',
+        type:'soldier',
         text:'卒',
+        id:'24',
         x:200,
         y:150
     }
     var soldier_4 = {
+        role:'blue',
+        type:'soldier',
         text:'卒',
+        id:'25',
         x:300,
         y:150
     }
     var soldier_5 = {
+        role:'red',
+        type:'soldier',
         text:'卒',
+        id:'26',
         x:400,
         y:150
     }
 
     var soldier_6 = {
+        role:'red',
+        type:'soldier',
         text:'兵',
+        id:'27',
         x:0,
         y:300
     }
     var soldier_7 = {
+        role:'red',
         text:'兵',
+        id:'28',
         x:100,
         y:300
     }
     var soldier_8 = {
+        role:'red',
+        type:'soldier',
         text:'兵',
+        id:'29',
         x:200,
         y:300
     }
     var soldier_9 = {
+        role:'red',
+        type:'soldier',
         text:'兵',
+        id:'30',
         x:300,
         y:300
     }
     var soldier_10 = {
+        role:'red',
+        type:'soldier',
         text:'兵',
+        id:'31',
         x:400,
         y:300
     }
 
+
+    var chessmans = {
+        "blue":[],
+        "red":[]
+    };
+    chessmans.blue = [car_1,car_2,horse_1,horse_2,elephant_1,elephant_2,knight_1,knight_2,boss_1,gun_1,gun_2,soldier_1,soldier_2,soldier_3,soldier_4,soldier_5];
+    chessmans.red = [car_3,car_4,horse_3,horse_4,elephant_3,elephant_4,knight_3,knight_4,boss_2,gun_3,gun_4,soldier_6,soldier_7,soldier_8,soldier_9,soldier_10];
     startGame();
 
     function startGame() {
         // 初始化棋子
 
-        var chessman_1 = [car_1,car_2,horse_1,horse_2,elephant_1,elephant_2,knight_1,knight_2,boss_1,gun_1,gun_2,soldier_1,soldier_2,soldier_3,soldier_4,soldier_5];
-        for(var i = 0; i < chessman_1.length; i++){
-            $('#chess').append('<span class="chessman"><span>'+chessman_1[i].text+'</span></span>');
+
+        for(var i = 0; i < chessmans.blue.length; i++){
+            $('#chess').append('<span class="chessman" data-role="blue" data-id=\"'+chessmans.blue[i].id+'\"><span>'+chessmans.blue[i].text+'</span></span>');
 
             $('#chess').children().eq($('#chess').children().length-1).css({
-                "top":chessman_1[i].y,
-                "left":chessman_1[i].x
+                "top":chessmans.blue[i].y,
+                "left":chessmans.blue[i].x
             });
 
         }
-        var chessman_2 = [car_3,car_4,horse_3,horse_4,elephant_3,elephant_4,knight_3,knight_4,boss_2,gun_3,gun_4,soldier_6,soldier_7,soldier_8,soldier_9,soldier_10];
-        for(var i = 0; i < chessman_2.length; i++){
-            $('#chess').append('<span class="chessman chessman1"><span>'+chessman_2[i].text+'</span></span>');
+
+        for(var i = 0; i < chessmans.red.length; i++){
+            $('#chess').append('<span class="chessman chessman1" data-role="red" data-id=\"'+chessmans.red[i].id+'\"><span>'+chessmans.red[i].text+'</span></span>');
 
             $('#chess').children().eq($('#chess').children().length-1).css({
-                "top":chessman_2[i].y,
-                "left":chessman_2[i].x
+                "top":chessmans.red[i].y,
+                "left":chessmans.red[i].x
             });
 
         }
     }
-    var $curr = null
+    function clearGame() {
+        $('#chess').empty();
+    }
+    var $curr = null;
+
+    var isUp = false;
+
+    Array.prototype.hasChess = function (id,x,y) {
+        for(let i = 0;i<this.length;i++){
+            if(this[i].id != id && this[i].x == x && this[i].y == y){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Array.prototype.eatEnemies = function (x,y) {
+        for(let i = 0;i<this.length;i++){
+            if(this[i].x == x && this[i].y == y){
+                return this[i].id;
+            }
+        }
+        return "";
+    }
+
+    function getIndex(role,id) {
+
+        for(var i=0;i<chessmans[role].length;i++){
+            if(chessmans[role][i].id == id ){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // 判断下落点是否有其他棋子，如果该棋子是己方棋子则直接return;
+    // 如果该棋子是对方棋子，则吃掉该棋子
+
+    var rule_base = {
+
+        "horse":function(chess, x, y){
+
+            var arr = [{x:-100,y:-50},{x:-50,y:-100},{x:50,y:-100},{x:100,y:-50},{x:100,y:50},{x:50,y:100},{x:-50,y:100},{x:-100,y:50}]
+
+            for(let i = 0;i<arr.length;i++){
+
+                if(x-chess.x == arr[i].x && y-chess.y == arr[i].y){
+                    // 判断下落点是否有其他己方棋子
+                    if(chessmans[chess.role].hasChess(chess.id,x,y)){
+                        // 有则直接return
+                        return chess;
+                    }
+                    // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+                    var enemy_id = chessmans[chess.role == "blue"? "red":"blue"].eatEnemies(x,y)
+                    if(enemy_id != ''){
+                        // 移除该棋子
+                        chessmans[chess.role == "blue"? "red":"blue"].splice(getIndex(chess.role == "blue"? "red":"blue",enemy_id),1);
+
+                        chess.x = x;
+                        chess.y = y;
+
+                        // 清空棋盘
+                        clearGame();
+
+                        // 放置棋子
+                        startGame();
+
+                        return chess;
+                    }
+                    chess.x = x;
+                    chess.y = y;
+                    return chess;
+
+                }
+
+            }
+            return chess;
+
+        },
+        "car":function (chess, x, y) {
+            // 判断是否是直线
+            if(chess.x != x && chess.y != y){
+                return chess;
+            }
+            // 移动路线中间不能有其他棋子
+            var count = countChessBetweenRoute(chess,x,y);
+            console.log("count:",count)
+            if(count != 0){
+                // 中间有棋子 ，走不了
+                return chess;
+            }
+            // 中间没有棋子 可以走
+            // 判断下落点是否有其他己方棋子
+            if(chessmans[chess.role].hasChess(chess.id,x,y)){
+                // 有则直接return
+                return chess;
+            }
+            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+            var enemy_id = chessmans[chess.role == "blue"? "red":"blue"].eatEnemies(x,y)
+            if(enemy_id != ''){
+                // 移除该棋子
+                chessmans[chess.role == "blue"? "red":"blue"].splice(getIndex(chess.role == "blue"? "red":"blue",enemy_id),1);
+
+                chess.x = x;
+                chess.y = y;
+
+                // 清空棋盘
+                clearGame();
+
+                // 放置棋子
+                startGame();
+
+                return chess;
+            }
+            chess.x = x;
+            chess.y = y;
+            return chess;
+
+        },
+        "soldier":function (chess, x, y) {
+            // 判断是否合乎规则 未过界时，只能朝一个方向走，过界后，不能往后走
+            // 首先判断是否只走了一格
+            if((chess.x == x && Math.abs(chess.y-y))||(chess.y == y && Math.abs(chess.x-x))){
+                // 只走了一格
+                // 判断当前是都过界
+                if(checkBound(chess,x,y)){
+                    // 过界
+                    if((chess.x == x && Math.abs(chess.y - y) > 50) || (chess.y == y && Math.abs(y - chess.y) > 50) || (chess.x == x && chess.y - y ==50)){
+                        return chess;
+                    }
+
+                }else{
+                    // 没有过界
+                    // 判断是否是只向前走了一格
+                    if(chess.x != x || (y-chess.y != 50 && chess.x == x)){
+                        return chess;
+                    }
+                }
+            }
+            // 判断下落点是否有其他己方棋子
+            if(chessmans[chess.role].hasChess(chess.id,x,y)){
+                // 有则直接return
+                return chess;
+            }
+            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+            var enemy_id = chessmans[chess.role == "blue"? "red":"blue"].eatEnemies(x,y)
+            if(enemy_id != ''){
+                // 移除该棋子
+                chessmans[chess.role == "blue"? "red":"blue"].splice(getIndex(chess.role == "blue"? "red":"blue",enemy_id),1);
+
+                chess.x = x;
+                chess.y = y;
+
+                // 清空棋盘
+                clearGame();
+
+                // 放置棋子
+                startGame();
+
+                return chess;
+            }
+            chess.x = x;
+            chess.y = y;
+            return chess;
+        }
+    };
+
+    function checkBound(chess,x,y){
+        //判断是红方还是蓝方棋子
+        if(chess.role == 'blue' && y > 200){
+            return true;
+        }
+        if(chess.role == 'red' && y < 250){
+            return true
+        }
+        return false
+    }
+
+    function countChessBetweenRoute(chess,x,y) {
+        var count = 0;
+        var arr = chessmans.blue.concat(chessmans.red);
+        if(chess.x == x){
+            // 判断竖轴
+            for(let i = 0 ; i<arr.length; i++){
+                if(arr[i].y<Math.max(chess.y,y) && arr[i].y > Math.min(chess.y,y) && arr[i].x == x){
+                    count ++;
+                }
+            }
+
+        }else{
+            // 判断横轴
+            for(let i = 0 ; i<arr.length; i++){
+                if(arr[i].x<Math.max(chess.x,x) && arr[i].x > Math.min(chess.x,x) && arr[i].y == y){
+                    count ++;
+                }
+            }
+        }
+        return count;
+    }
+    function getChess(dataset){
+
+        var arr = chessmans[dataset.role];
+
+        for (let i = 0;i<arr.length; i++){
+            if(arr[i].id == dataset.id){
+                return arr[i];
+            }
+        }
+
+        return "";
+    }
 
     // Jquery 方式 监听棋子点击事件
-    $('span.chessman').on('click',function (e) {
-        console.log($(e.target).text());
+    $('#chess').on('click',function (ev) {
 
-        $curr = $(e.target).parent()
+        if(isUp){
+
+            var dataset =  $(ev.target).parent().data();
+
+            var xx = ev.originalEvent.x || ev.originalEvent.layerX || 0;
+            var yy = ev.originalEvent.y || ev.originalEvent.layerY || 0;
+            var x = xx-document.getElementById('chess').getBoundingClientRect().x;
+            var y = yy-document.getElementById('chess').getBoundingClientRect().y;
+
+            // 判断是否出界
+            if(x<0 || y < 0 || x > 400 || y > 450 ){
+                // 出界
+                return
+            }
+
+            // 将xx和yy转为标准的点坐标
+            var x1 = x % 100 ;
+            var x2 = 0;
+            if(x1>25 && x1 < 75){
+                x2 = 50;
+            }
+            if(x1 >= 76 && x1 <100){
+                x2 = 100;
+            }
+            var x = Math.floor(x/100)*100 + x2;
+
+            var y1 = y % 100 ;
+
+            var y2 = 0;
+            if(y1>25 && y1 < 75){
+                y2 = 50;
+            }
+            if(y1 >= 76 && y1 <100){
+                y2 = 100;
+            }
+            var y = Math.floor(y/100)*100 + y2;
+
+
+            var chess = getChess(dataset);
+
+            var new_chess = rule_base[chess.type](chess,x,y);
+
+            $curr.css({
+                "top":new_chess.y,
+                "left":new_chess.x
+            })
+            $curr.removeClass('high-index');
+
+
+            $curr = null
+            isUp = false;
+        }else{
+            $curr = $(ev.target).parent()
+            $curr.addClass('high-index');
+            isUp = true;
+        }
+
 
     })
     $(document).on('mousemove',function (ev) {
