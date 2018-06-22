@@ -377,9 +377,19 @@
     function clearGame() {
         $('#chess').empty();
     }
+
+    // 当前可 活动 的棋子
     var $curr = null;
 
+    // 1.isUp 当前棋子是否是可移动状态，isUp为true的时候，才可以落子
+    // 2.isUp 默认是false，即不可落子（这个时候没有选中任何棋子）
+    // 3.当点击某棋子时，通过isUp判断是要起子还是落子
+    // 4.isUp为false时，点击棋子时，为起子操作，isUp置为true
+    // 5.isUp为true时，点击棋子时，为落子操作，落子完成后，isUp置为false;
     var isUp = false;
+
+    // 当前可下棋的角色，红方或蓝方
+    var curr_role = 'red';
 
     Array.prototype.hasChess = function (id,x,y) {
         for(let i = 0;i<this.length;i++){
@@ -677,6 +687,14 @@
     // Jquery 方式 监听棋子点击事件
     $('#chess').on('click',function (ev) {
 
+        // 是否轮到当前角色下棋，即红蓝方依次落子
+
+        if(curr_role != $(ev.target).parent().data().role){
+            console.error('未轮到',$(ev.target).parent().data().role,'下棋');
+
+            return ;
+        }
+
         if(isUp){
 
             var dataset =  $(ev.target).parent().data();
@@ -723,9 +741,13 @@
                 "top":new_chess.y,
                 "left":new_chess.x
             })
+
+            // 落子成功，则转变角色，如果没有落子成功，棋子回到原处，不转变角色
+            if(new_chess.x == x && new_chess.y == y){
+                curr_role = curr_role == 'blue'?'red':'blue';
+            }
+
             $curr.removeClass('high-index');
-
-
             $curr = null
             isUp = false;
         }else{
@@ -733,13 +755,9 @@
             $curr.addClass('high-index');
             isUp = true;
         }
-
-
     })
     $(document).on('mousemove',function (ev) {
-
         //console.log(document.getElementById('chess').getBoundingClientRect());
-
         if($curr !== null){
             var xx = ev.originalEvent.x || ev.originalEvent.layerX || 0;
             var yy = ev.originalEvent.y || ev.originalEvent.layerY || 0;
