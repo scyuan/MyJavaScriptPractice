@@ -421,34 +421,8 @@
             for(let i = 0;i<arr.length;i++){
 
                 if(x-chess.x == arr[i].x && y-chess.y == arr[i].y){
-                    // 判断下落点是否有其他己方棋子
-                    if(chessmans[chess.role].hasChess(chess.id,x,y)){
-                        // 有则直接return
-                        return chess;
-                    }
-                    // 判断落点是否是敌对棋子，是的话则吃点对方棋子
-                    var enemy_id = chessmans[chess.role == "blue"? "red":"blue"].eatEnemies(x,y)
-                    if(enemy_id != ''){
-                        // 移除该棋子
-                        chessmans[chess.role == "blue"? "red":"blue"].splice(getIndex(chess.role == "blue"? "red":"blue",enemy_id),1);
-
-                        chess.x = x;
-                        chess.y = y;
-
-                        // 清空棋盘
-                        clearGame();
-
-                        // 放置棋子
-                        startGame();
-
-                        return chess;
-                    }
-                    chess.x = x;
-                    chess.y = y;
-                    return chess;
-
+                    return landing(chess,x,y);
                 }
-
             }
             return chess;
 
@@ -466,31 +440,7 @@
                 return chess;
             }
             // 中间没有棋子 可以走
-            // 判断下落点是否有其他己方棋子
-            if(chessmans[chess.role].hasChess(chess.id,x,y)){
-                // 有则直接return
-                return chess;
-            }
-            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
-            var enemy_id = chessmans[chess.role == "blue"? "red":"blue"].eatEnemies(x,y)
-            if(enemy_id != ''){
-                // 移除该棋子
-                chessmans[chess.role == "blue"? "red":"blue"].splice(getIndex(chess.role == "blue"? "red":"blue",enemy_id),1);
-
-                chess.x = x;
-                chess.y = y;
-
-                // 清空棋盘
-                clearGame();
-
-                // 放置棋子
-                startGame();
-
-                return chess;
-            }
-            chess.x = x;
-            chess.y = y;
-            return chess;
+            return landing(chess,x,y);
 
         },
         "soldier":function (chess, x, y) {
@@ -525,31 +475,8 @@
             } else {
                 return chess;
             }
-            // 判断下落点是否有其他己方棋子
-            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
-                // 有则直接return
-                return chess;
-            }
-            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
-            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
-            if (enemy_id != '') {
-                // 移除该棋子
-                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
 
-                chess.x = x;
-                chess.y = y;
-
-                // 清空棋盘
-                clearGame();
-
-                // 放置棋子
-                startGame();
-
-                return chess;
-            }
-            chess.x = x;
-            chess.y = y;
-            return chess;
+            return landing(chess,x,y);
         },
         "gun":function (chess,x,y) {
             // 获取落点位置
@@ -561,31 +488,8 @@
             if((Math.abs(pos.x) > 0 && Math.abs(pos.y) > 0) || count > 1){
                 return chess;
             }
-            // 判断下落点是否有其他己方棋子
-            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
-                // 有则直接return
-                return chess;
-            }
-            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
-            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
-            if (enemy_id != '') {
-                // 移除该棋子
-                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
 
-                chess.x = x;
-                chess.y = y;
-
-                // 清空棋盘
-                clearGame();
-
-                // 放置棋子
-                startGame();
-
-                return chess;
-            }
-            chess.x = x;
-            chess.y = y;
-            return chess;
+            return landing(chess,x,y);
         },
         "elephant":function (chess,x,y) {
             // 获取落点位置
@@ -606,32 +510,7 @@
                 return chess;
             }
 
-            // 判断下落点是否有其他己方棋子
-            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
-                // 有则直接return
-                return chess;
-            }
-            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
-            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
-            if (enemy_id != '') {
-                // 移除该棋子
-                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
-
-                chess.x = x;
-                chess.y = y;
-
-                // 清空棋盘
-                clearGame();
-
-                // 放置棋子
-                startGame();
-
-                return chess;
-            }
-
-            chess.x = x;
-            chess.y = y;
-            return chess;
+            return landing(chess,x,y);
         },
         "knight":function (chess,x,y) {
             // 是否在活动范围内
@@ -648,32 +527,7 @@
                 return chess;
             }
 
-            // 判断下落点是否有其他己方棋子
-            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
-                // 有则直接return
-                return chess;
-            }
-            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
-            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
-            if (enemy_id != '') {
-                // 移除该棋子
-                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
-
-                chess.x = x;
-                chess.y = y;
-
-                // 清空棋盘
-                clearGame();
-
-                // 放置棋子
-                startGame();
-
-                return chess;
-            }
-
-            chess.x = x;
-            chess.y = y;
-            return chess;
+            return landing(chess,x,y);
         },
         "boss":function (chess,x,y) {
             // 是否在活动范围内
@@ -692,33 +546,40 @@
             if((pos.x == 0 && Math.abs(pos.y) > 1) || (pos.y == 0 && Math.abs(pos.x) > 1)){
                 return chess;
             }
-            // 判断下落点是否有其他己方棋子
-            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
-                // 有则直接return
-                return chess;
-            }
-            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
-            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
-            if (enemy_id != '') {
-                // 移除该棋子
-                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
 
-                chess.x = x;
-                chess.y = y;
+            return landing(chess,x,y);
 
-                // 清空棋盘
-                clearGame();
 
-                // 放置棋子
-                startGame();
-
-                return chess;
-            }
-            chess.x = x;
-            chess.y = y;
-            return chess;
         }
     };
+
+    function landing(chess,x,y) {
+        // 判断下落点是否有其他己方棋子
+        if (chessmans[chess.role].hasChess(chess.id, x, y)) {
+            // 有则直接return
+            return chess;
+        }
+        // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+        var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
+        if (enemy_id != '') {
+            // 移除该棋子
+            chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
+
+            chess.x = x;
+            chess.y = y;
+
+            // 清空棋盘
+            clearGame();
+
+            // 放置棋子
+            startGame();
+
+            return chess;
+        }
+        chess.x = x;
+        chess.y = y;
+        return chess;
+    }
 
     // 判断当前走了几个 例如往右下走了一格则返回{x:1,y:1}
     function getRelativePos(chess,x,y) {
@@ -816,11 +677,9 @@
 
             var chess = getChess(dataset);
 
-            console.log(chess);
-
             var new_chess = rule_base[chess.type](chess,x,y);
 
-            console.log(new_chess);
+            console.log(new_chess === chess);
 
             $curr.css({
                 "top":new_chess.y,
@@ -851,8 +710,6 @@
                 "left":xx-document.getElementById('chess').getBoundingClientRect().x
             })
         }
-
-
     })
     // JavaScript 原生方式监听棋子点击事件
 
