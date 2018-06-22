@@ -311,6 +311,7 @@
     var soldier_7 = {
         role:'red',
         text:'兵',
+        type:'soldier',
         id:'28',
         x:100,
         y:300
@@ -495,33 +496,212 @@
         "soldier":function (chess, x, y) {
             // 判断是否合乎规则 未过界时，只能朝一个方向走，过界后，不能往后走
             // 首先判断是否只走了一格
-            if((chess.x == x && Math.abs(chess.y-y))||(chess.y == y && Math.abs(chess.x-x))){
+
+            var pos = getRelativePos(chess, x, y);
+
+            if ((chess.x == x && Math.abs(chess.y - y) / 50 === 1) || (chess.y == y && Math.abs(chess.x - x) / 50 === 1)) {
                 // 只走了一格
                 // 判断当前是都过界
-                if(checkBound(chess,x,y)){
+                if (checkBound(chess, x, y)) {
                     // 过界
-                    if((chess.x == x && Math.abs(chess.y - y) > 50) || (chess.y == y && Math.abs(y - chess.y) > 50) || (chess.x == x && chess.y - y ==50)){
+                    // 过界了棋子只能"向前、左、右"走一格，不能往后走
+                    if (chess.role == 'blue' && (Math.abs(pos.x) > 1 || (Math.abs(pos.x) == 0 && pos.y != 1))) {
+                        return chess;
+                    }
+                    if (chess.role == 'red' && (Math.abs(pos.x) > 1 || (Math.abs(pos.x) == 0 && pos.y != -1))) {
                         return chess;
                     }
 
-                }else{
+                } else {
                     // 没有过界
                     // 判断是否是只向前走了一格
-                    if(chess.x != x || (y-chess.y != 50 && chess.x == x)){
+                    if (chess.role == 'blue' && (Math.abs(pos.x) > 0 || (pos.y != 1 && Math.abs(pos.x) == 0))) {
+                        return chess;
+                    }
+                    if (chess.role == 'red' && (Math.abs(pos.x) > 0 || (pos.y != -1 && Math.abs(pos.x) == 0))) {
                         return chess;
                     }
                 }
+            } else {
+                return chess;
             }
             // 判断下落点是否有其他己方棋子
-            if(chessmans[chess.role].hasChess(chess.id,x,y)){
+            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
                 // 有则直接return
                 return chess;
             }
             // 判断落点是否是敌对棋子，是的话则吃点对方棋子
-            var enemy_id = chessmans[chess.role == "blue"? "red":"blue"].eatEnemies(x,y)
-            if(enemy_id != ''){
+            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
+            if (enemy_id != '') {
                 // 移除该棋子
-                chessmans[chess.role == "blue"? "red":"blue"].splice(getIndex(chess.role == "blue"? "red":"blue",enemy_id),1);
+                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
+
+                chess.x = x;
+                chess.y = y;
+
+                // 清空棋盘
+                clearGame();
+
+                // 放置棋子
+                startGame();
+
+                return chess;
+            }
+            chess.x = x;
+            chess.y = y;
+            return chess;
+        },
+        "gun":function (chess,x,y) {
+            // 获取落点位置
+            var pos = getRelativePos(chess,x,y);
+            // 获取中间经过的棋子的数量
+            var count = countChessBetweenRoute(chess,x,y);
+
+            // 如果不是直线或者中间棋子数量不是1或者大于1，则返回
+            if((Math.abs(pos.x) > 0 && Math.abs(pos.y) > 0) || count > 1){
+                return chess;
+            }
+            // 判断下落点是否有其他己方棋子
+            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
+                // 有则直接return
+                return chess;
+            }
+            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
+            if (enemy_id != '') {
+                // 移除该棋子
+                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
+
+                chess.x = x;
+                chess.y = y;
+
+                // 清空棋盘
+                clearGame();
+
+                // 放置棋子
+                startGame();
+
+                return chess;
+            }
+            chess.x = x;
+            chess.y = y;
+            return chess;
+        },
+        "elephant":function (chess,x,y) {
+            // 获取落点位置
+            var pos = getRelativePos(chess,x,y);
+            // 获取中间经过的棋子的数量
+            var count = countChessBetweenRoute(chess,x,y);
+
+            // 不能过界
+            if(chess.role == 'blue' && y > 200){
+                return chess;
+            }
+            if(chess.role == 'red' && y < 250){
+                return chess;
+            }
+
+            // 象的规则
+            if(Math.abs(pos.x) != 2 || Math.abs(pos.y) != 2){
+                return chess;
+            }
+
+            // 判断下落点是否有其他己方棋子
+            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
+                // 有则直接return
+                return chess;
+            }
+            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
+            if (enemy_id != '') {
+                // 移除该棋子
+                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
+
+                chess.x = x;
+                chess.y = y;
+
+                // 清空棋盘
+                clearGame();
+
+                // 放置棋子
+                startGame();
+
+                return chess;
+            }
+
+            chess.x = x;
+            chess.y = y;
+            return chess;
+        },
+        "knight":function (chess,x,y) {
+            // 是否在活动范围内
+            if(x<150 || x > 250){
+                return chess;
+            }
+            var yy = y > 200 ? y - 350: y;
+            if(yy < 0 ||yy > 100){
+                return chess;
+            }
+            var pos = getRelativePos(chess,x,y);
+            // 士的规则
+            if(Math.abs(pos.x) != 1 || Math.abs(pos.y) !=1){
+                return chess;
+            }
+
+            // 判断下落点是否有其他己方棋子
+            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
+                // 有则直接return
+                return chess;
+            }
+            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
+            if (enemy_id != '') {
+                // 移除该棋子
+                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
+
+                chess.x = x;
+                chess.y = y;
+
+                // 清空棋盘
+                clearGame();
+
+                // 放置棋子
+                startGame();
+
+                return chess;
+            }
+
+            chess.x = x;
+            chess.y = y;
+            return chess;
+        },
+        "boss":function (chess,x,y) {
+            // 是否在活动范围内
+            if(x<150 || x > 250){
+                return chess;
+            }
+            var yy = y > 200 ? y - 350: y;
+            if(yy < 0 ||yy > 100){
+                return chess;
+            }
+            var pos = getRelativePos(chess,x,y);
+
+            if(pos.x != 0 && pos.y != 0){
+                return chess;
+            }
+            if((pos.x == 0 && Math.abs(pos.y) > 1) || (pos.y == 0 && Math.abs(pos.x) > 1)){
+                return chess;
+            }
+            // 判断下落点是否有其他己方棋子
+            if (chessmans[chess.role].hasChess(chess.id, x, y)) {
+                // 有则直接return
+                return chess;
+            }
+            // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+            var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
+            if (enemy_id != '') {
+                // 移除该棋子
+                chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
 
                 chess.x = x;
                 chess.y = y;
@@ -539,6 +719,14 @@
             return chess;
         }
     };
+
+    // 判断当前走了几个 例如往右下走了一格则返回{x:1,y:1}
+    function getRelativePos(chess,x,y) {
+        return {
+            x:(x-chess.x)/50,
+            y:(y-chess.y)/50
+        }
+    }
 
     function checkBound(chess,x,y){
         //判断是红方还是蓝方棋子
@@ -628,7 +816,11 @@
 
             var chess = getChess(dataset);
 
+            console.log(chess);
+
             var new_chess = rule_base[chess.type](chess,x,y);
+
+            console.log(new_chess);
 
             $curr.css({
                 "top":new_chess.y,
