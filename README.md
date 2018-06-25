@@ -18,3 +18,7 @@
 ### canvas贪吃蛇
 
 ![](https://ws1.sinaimg.cn/large/006tNc79ly1fs84oe6lnhg31cq0x44gz.gif)
+
+### canvas+js实现贪吃蛇
+
+![](https://ws2.sinaimg.cn/large/006tKfTcly1fsni96zting30sg0sgb2e.gif)

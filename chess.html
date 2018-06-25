@@ -735,6 +735,10 @@
 
             var chess = getChess(dataset);
 
+            // 验证棋子是否成功落子。即结束本方回合
+            var prev_x = chess.x;
+            var prev_y = chess.y;
+
             var new_chess = rule_base[chess.type](chess,x,y);
 
             $curr.css({
@@ -743,9 +747,17 @@
             })
 
             // 落子成功，则转变角色，如果没有落子成功，棋子回到原处，不转变角色
-            if(new_chess.x == x && new_chess.y == y){
+            if(new_chess.x !== prev_x || new_chess.y !== prev_y){
+                // c判断当前角色的胜负
+                if(checkResult(curr_role)){
+                    //如果当前赢了
+                    var a = curr_role == 'blue'?'蓝方':'红方'
+                    alert('恭喜'+a+'获胜');
+                }
                 curr_role = curr_role == 'blue'?'red':'blue';
             }
+
+
 
             $curr.removeClass('high-index');
             $curr = null
@@ -767,6 +779,18 @@
             })
         }
     })
+
+    // 判断胜负
+    function checkResult(role) {
+        var arr = chessmans[role == 'blue'? 'red':'blue'];
+        for(let i = 0;i<arr.length;i++){
+            if(arr[i].type == 'boss'){
+                return false;
+            }
+        }
+        return true;
+    }
+
     // JavaScript 原生方式监听棋子点击事件
 
     function drawboard(){
