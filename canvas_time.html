@@ -1,23 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Canvas</title>
-  <style type="text/css">
-  	/*#canvas1{
-  		position: relative;
-		left: 500px;
-  	}
-  	#canvas2{
-  		position: relative;
-		left: 1000px;
-  	}*/
-  </style>
+  <title>Canvas Time</title>
 </head>
-
 <body>
 <canvas id="canvas" width="1000" height="500"></canvas>
-
- 
 <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
 <script type="text/javascript">
      
@@ -30,16 +17,17 @@
 
   		// })(document,jQuery);
 
+
       var balls = [];
 
   		var zero = [
                   [0,1,1,1,0],
-  				        [1,0,0,0,1],
-  				        [1,0,0,1,1],
-  				        [1,0,1,0,1],
-  				        [1,1,0,0,1],
-  			          [1,0,0,0,1],
-  			          [0,1,1,1,0]]
+                  [1,0,0,0,1],
+                  [1,0,0,1,1],
+                  [1,0,1,0,1],
+                  [1,1,0,0,1],
+                  [1,0,0,0,1],
+                  [0,1,1,1,0]]
 
   		var one = [
                   [0,0,1,0,0],
@@ -138,75 +126,46 @@
   	
   		var ctx = canvas1.getContext('2d');
 
-      var u = 0.85;
+        var u = 0.85;
   	
   		var temp = [];
 
-  		// init();
-  		
-  		// function init(){
-  		// 	var date = new Date();
-
-  		// 	var hours = formatter(date.getHours());
-
-  		// 	var minutes = formatter(date.getMinutes());
-
-  		// 	var seconds = formatter(date.getSeconds()+1);	
-
-  		// 	var arr = [];
-
-  		// 	arr.push(create(hours));
-    //     arr.push(dott);
-  		// 	arr.push(create(minutes));
-    //     arr.push(dott);
-  		// 	arr.push(create(seconds));
-
-  		// 	temp = arr;
-
-  		// 	for(var k = 0;k<arr.length;k++){
-  		// 		for(var kk =0; kk<arr[k].length;kk++){
-  		// 			draw_number(arr[k][kk],kk);
-  		// 		}
-	  			
-	  	// 	}
-
-  		// }
-
   		setInterval(function(){
 
-        ctx.clearRect(0,0,canvas.width,canvas.height); 
+          ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  			var date = new Date();
+          var date = new Date();
 
-  			var hours = formatter(date.getHours());
+          var hours = formatter(date.getHours());
 
-  			var minutes = formatter(date.getMinutes());
+          var minutes = formatter(date.getMinutes());
 
-  			var seconds = formatter(date.getSeconds()+1);	
+          var seconds = formatter(date.getSeconds()+1);
 
-  			var arr = [];
+          var arr = [];
 
-  			arr = create(hours,minutes,seconds);
+          // 将时间生成一个数组，数组的元素是一个二维数组，代表一个数字，用来绘制数字或者符号
+          arr = create(hours,minutes,seconds);
 
+          // 绘制每个cavas的图形，绘制数字
+          for(var k = 0;k<arr.length;k++){
+              draw_number(arr[k],k);
+          }
 
-        
+          // 每次生成的时间数字数组，将与上一生成的数组进行对比，不同的（变化的）保存一个数组里面，单独渲染，来生成一个彩色球跳动动画
+          addBall(arr);
 
-  			 
-
-  			// 绘制每个cavas的图形
-  			for(var k = 0;k<arr.length;k++){
-  					draw_number(arr[k],k);
-	  		}
-        addBall(arr);
-
-        temp = arr;
+          // 保存当前数组
+          temp = arr;
 
   		},10)
   		
       function addBall(arr){
+        // 第一次没有上一次保存的时间数组，则返回。
         if(temp.length == 0)
           return;
 
+        // temp和arr是两个长度相等的数组，循环比较数组每项
         for(let i = 0;i<arr.length;i++){
 
           if(temp[i].toString() != arr[i].toString()){
@@ -216,19 +175,16 @@
               for(var j = 0 ; j < curr_arr[ii].length; j++){
                 
                 if(curr_arr[ii][j] == 1){
-                  // ctx.beginPath();
-                  // ctx.fillStyle = '#000080';
-                  // ctx.arc((j+1+k*3)*22,(i+1)*20,10,0,360,false); 
-                  // ctx.fill();
+
                   var ball = {
-                    offsetX:(j+1+i*3)*22+i*50,
-                    offsetY:(ii+1)*20,
-                    r:10,
-                    g:0.06+Math.random()*0.06,
-                    fillStyle:color[Math.floor(Math.random()*8)],
-                    vx:Math.pow(-1, Math.ceil(Math.random()*10))*Math.random(),
-                    vy:-1,
-                    vyy:-5
+                    offsetX:(j+1+i*3)*22+i*50,                                  // 小球x轴偏移量
+                    offsetY:(ii+1)*20,                                          // 小球y轴偏移量
+                    r:10,                                                       // 小球半径
+                    g:0.06+Math.random()*0.06,                                  // 类似于引力，小球初始向上运动，并速度回慢慢减小，减小到0时，方向向下运动。该参数很重要，可以产生一个boom的效果，并且小球触底之后需要一个弹上弹下的效果。
+                    fillStyle:color[Math.floor(Math.random()*8)],               // 绘制小球的颜色
+                    vx:Math.pow(-1, Math.ceil(Math.random()*10))*Math.random(), // 随机初始x轴的速度，负数向左，正数向右
+                    vy:-1,                                                      // 初始y轴的速度
+                    vyy:-5                                                      // 触底后，初始的y轴的速度
                   }
                   balls.push(ball);
                   
@@ -268,28 +224,36 @@
           balls[i].offsetY = balls[i].offsetY + balls[i].vy;
           balls[i].vy = balls[i].vy + balls[i].g;
 
-          if(balls[i].offsetX < -balls[i].r || balls[i].offsetX > canvas.width+balls[i].r){
+          // 判断是否小球已经运动出界，出界则需要移除，将需要移除的下标暂时存起来
+          if(balls[i].offsetX < - balls[i].r || balls[i].offsetX > canvas.width+balls[i].r){
             // 需要移除该彩色球
             
             if(!remove_index.includes(i)){
               remove_index.push(i);
             }
 
-
           }
 
+          // 判断小球是否触底
           if(balls[i].offsetY + balls[i].r >=  canvas.height){
+
+            // 每触底一次，则加速当前小球的x轴方向速度
             if(balls[i].vx<0)
               balls[i].vx = balls[i].vx - 0.1;
             else
               balls[i].vx = balls[i].vx + 0.1;
+
+            // 将小球的y轴距离设置为底部
             balls[i].offsetY = canvas.height - balls[i].r
+
+            // 每次触底后，需要重新设置小球一个向上的速度，u是一个损耗系数，即每触底一次，速度都会减小，导致小球每弹一次到达的最高高度减小。
+            // 小球弹弹弹的效果看起来像是抛物线之类，本来是向通过函数来实现，但是感觉好像有点麻烦（求不出这个函数），所以使用vx,vy,vyy,u,g这个参数来实现。
             balls[i].vyy = balls[i].vyy * u;
             balls[i].vy = balls[i].vyy;
           }
-
-          
         }
+
+        // 移除小球的动作，这部很关键
         var sort = remove_index.map(function(x1,x2){
           return x1-x2;
         })
@@ -403,9 +367,6 @@
   			  }
   		  }
   		}
-
-
-
   </script>
 
 
