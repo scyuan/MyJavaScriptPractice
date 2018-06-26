@@ -90,7 +90,7 @@
 
 <button id="send">发送</button>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+<script src="js/socket.io.js"></script>
 </body>
 <script src="js/jquery-3.2.0.min.js"></script>
 <script>
@@ -102,12 +102,6 @@
     var socket = io('http://127.0.0.1:3001');
 
     var myId = '';
-
-    socket.on('news', function (data) {
-        console.log(data);
-        socket.emit('my other event', { my: 'data' });
-    });
-
 
 
     var gameBg_canvas = document.getElementById('gameBg');
@@ -425,10 +419,13 @@
     // 当前可下棋的角色，红方或蓝方
     var curr_role = 'red';
 
+    var canChess = false;
+
     socket.on('socketId',function (data) {
         console.log('my:',data);
         myId = data.id;
         curr_role = data.role;
+        canChess = data.canChess;
     })
 
     Array.prototype.hasChess = function (id,x,y) {
@@ -726,10 +723,11 @@
 
     // Jquery 方式 监听棋子点击事件
     $('#chess').on('click',function (ev) {
+        console.log(canChess);
 
         // 是否轮到当前角色下棋，即红蓝方依次落子
 
-        if(curr_role != $(ev.target).parent().data().role){
+        if(!canChess || curr_role != $(ev.target).parent().data().role){
             console.error('未轮到',$(ev.target).parent().data().role,'下棋');
 
             return ;
@@ -794,14 +792,13 @@
                     var a = curr_role == 'blue'?'蓝方':'红方'
                     alert('恭喜'+a+'获胜');
                 }
-                curr_role = curr_role == 'blue'?'red':'blue';
+                // curr_role = curr_role == 'blue'?'red':'blue';
+
+                canChess = false;
 
                 // 将信息传至服务器
                 socket.emit('chess', {chess:new_chess,id:myId});
             }
-
-
-
             $curr.removeClass('high-index');
             $curr = null
             isUp = false;
@@ -826,6 +823,26 @@
     // 更新
     socket.on('fresh',function (data) {
         console.log(data);
+        var arr = chessmans[data.chess.role];
+        for(let i =0;i<arr.length;i++){
+            if(arr[i].id == data.chess.id){
+                arr[i].x = data.chess.x;
+                arr[i].y = data.chess.y;
+
+                if(data.chess.role != curr_role){
+                    canChess = true;
+                }else{
+                    canChess = false;
+                }
+
+                // 清空棋盘
+                clearGame();
+
+                // 放置棋子
+                startGame();
+                return ;
+            }
+        }
     })
 
     // 判断胜负
