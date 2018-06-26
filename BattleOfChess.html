@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>象棋</title>
+    <style>
+        .wrapper{
+            width: 410px;
+            height: 460px;
+            position: fixed;
+            border: 2px solid #CD3700;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .chess{
+            width: 400px;
+            height: 450px;
+            z-index: 99;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .chessman{
+            transform: translate(-50%,-50%);
+            position: fixed;
+            z-index: 99;
+            width: 40px;
+            height: 40px;
+            border-radius: 26px;
+            text-align: center;
+            line-height: 31px;
+            font-size: 27px;
+            font-family: 'STKaiti';
+            font-weight: bold;
+            color: rgb(32,26,102);
+            border: 1px solid rgb(151,124,102);
+            background: rgb(241,206,172);
+            box-sizing: border-box;
+            box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            /*transition: all .3s;*/
+
+        }
+        .chessman1{
+            color: rgb(201,58,44);
+        }
+        .chessman>span{
+            display: block;
+            width: 34px;
+            height: 34px;
+            border-radius: 17px;
+            border: 1px solid rgb(151,124,102);
+        }
+        .high-index{
+            z-index: 999;
+        }
+        .modal{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+            z-index: 999;
+        }
+
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <canvas id="gameBg" width="410" height="460"></canvas>
+</div>
+<div class="chess" id="chess">
+
+</div>
+
+<!--<div class="modal">-->
+
+    <!--<p>正在连接服务器...</p>-->
+
+<!--</div>-->
+
+<button id="send">发送</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+</body>
+<script src="js/jquery-3.2.0.min.js"></script>
+<script>
+
+    // 测试websocket
+
+    // var socket = io('http://127.0.0.1:3001/chess');
+    // 后面加chess,能连接上，但是不能发送接受消息
+    var socket = io('http://127.0.0.1:3001');
+
+    var myId = '';
+
+    socket.on('news', function (data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+    });
+
+
+
+    var gameBg_canvas = document.getElementById('gameBg');
+    var gamebg_ctx = gameBg_canvas.getContext('2d');
+
+    drawboard();
+
+    var car_1 = {
+        role:'blue',
+        type:'car',
+        text:'车',
+        id:'1',
+        x:0,
+        y:0,
+    }
+    var car_2 = {
+        role:'blue',
+        type:'car',
+        text:'车',
+        id:'2',
+        x:400,
+        y:0,
+    }
+    var car_3 = {
+        role:'red',
+        type:'car',
+        text:'車',
+        id:'3',
+        x:0,
+        y:450,
+    }
+    var car_4 = {
+        role:'red',
+        type:'car',
+        text:'車',
+        id:'5',
+        x:400,
+        y:450,
+    }
+
+    var horse_1 = {
+        role:'blue',
+        type:'horse',
+        text:'马',
+        id:'6',
+        x:50,
+        y:0,
+    }
+    var horse_2 = {
+        role:'blue',
+        type:'horse',
+        text:'马',
+        id:'7',
+        x:350,
+        y:0,
+    }
+    var horse_3 = {
+        role:'red',
+        type:'horse',
+        text:'馬',
+        id:'8',
+        x:50,
+        y:450,
+    }
+    var horse_4 = {
+        role:'red',
+        type:'horse',
+        text:'馬',
+        x:350,
+        id:'4',
+        y:450,
+    }
+    var elephant_1 ={
+        role:'blue',
+        type:'elephant',
+        text:'象',
+        id:'9',
+        x:100,
+        y:0,
+    }
+    var elephant_2 ={
+        role:'blue',
+        type:'elephant',
+        text:'象',
+        x:300,
+        id:'10',
+        y:0,
+    }
+    var elephant_3 ={
+        role:'red',
+        type:'elephant',
+        text:'相',
+        id:'11',
+        x:100,
+        y:450,
+    }
+    var elephant_4 ={
+        role:'red',
+        type:'elephant',
+        text:'相',
+        id:'12',
+        x:300,
+        y:450,
+    }
+    var knight_1 ={
+        role:'blue',
+        type:'knight',
+        text:'士',
+        id:'32',
+        x:150,
+        y:0,
+    }
+    var knight_2 ={
+        role:'blue',
+        type:'knight',
+        text:'士',
+        id:'13',
+        x:250,
+        y:0,
+    }
+    var knight_3 ={
+        role:'red',
+        type:'knight',
+        text:'士',
+        id:'14',
+        x:150,
+        y:450,
+    }
+    var knight_4 ={
+        role:'red',
+        type:'knight',
+        text:'士',
+        x:250,
+        id:'15',
+        y:450,
+    }
+    var boss_1 = {
+        role:'blue',
+        type:'boss',
+        text:'将',
+        id:'16',
+        x:200,
+        y:0,
+    }
+    var boss_2 = {
+        role:'red',
+        type:'boss',
+        text:'帥',
+        id:'17',
+        x:200,
+        y:450,
+    }
+    var gun_1 = {
+
+        role:'blue',
+        type:'gun',
+        text:'炮',
+        id:'18',
+        x:50,
+        y:100
+    }
+    var gun_2 = {
+        role:'blue',
+        type:'gun',
+        text:'炮',
+        id:'19',
+        x:350,
+        y:100
+    }
+    var gun_3 = {
+        role:'red',
+        type:'gun',
+        text:'炮',
+        id:'20',
+        x:50,
+        y:350
+    }
+    var gun_4 = {
+        role:'red',
+        type:'gun',
+        text:'炮',
+        id:'21',
+        x:350,
+        y:350
+    }
+    var soldier_1 = {
+        role:'blue',
+        type:'soldier',
+        text:'卒',
+        id:'22',
+        x:0,
+        y:150
+    }
+    var soldier_2 = {
+        role:'blue',
+        type:'soldier',
+        text:'卒',
+        id:'23',
+        x:100,
+        y:150
+    }
+    var soldier_3 = {
+        role:'blue',
+        type:'soldier',
+        text:'卒',
+        id:'24',
+        x:200,
+        y:150
+    }
+    var soldier_4 = {
+        role:'blue',
+        type:'soldier',
+        text:'卒',
+        id:'25',
+        x:300,
+        y:150
+    }
+    var soldier_5 = {
+        role:'red',
+        type:'soldier',
+        text:'卒',
+        id:'26',
+        x:400,
+        y:150
+    }
+
+    var soldier_6 = {
+        role:'red',
+        type:'soldier',
+        text:'兵',
+        id:'27',
+        x:0,
+        y:300
+    }
+    var soldier_7 = {
+        role:'red',
+        text:'兵',
+        type:'soldier',
+        id:'28',
+        x:100,
+        y:300
+    }
+    var soldier_8 = {
+        role:'red',
+        type:'soldier',
+        text:'兵',
+        id:'29',
+        x:200,
+        y:300
+    }
+    var soldier_9 = {
+        role:'red',
+        type:'soldier',
+        text:'兵',
+        id:'30',
+        x:300,
+        y:300
+    }
+    var soldier_10 = {
+        role:'red',
+        type:'soldier',
+        text:'兵',
+        id:'31',
+        x:400,
+        y:300
+    }
+
+
+    var chessmans = {
+        "blue":[],
+        "red":[]
+    };
+    chessmans.blue = [car_1,car_2,horse_1,horse_2,elephant_1,elephant_2,knight_1,knight_2,boss_1,gun_1,gun_2,soldier_1,soldier_2,soldier_3,soldier_4,soldier_5];
+    chessmans.red = [car_3,car_4,horse_3,horse_4,elephant_3,elephant_4,knight_3,knight_4,boss_2,gun_3,gun_4,soldier_6,soldier_7,soldier_8,soldier_9,soldier_10];
+    startGame();
+
+    function startGame() {
+        // 初始化棋子
+
+
+        for(var i = 0; i < chessmans.blue.length; i++){
+            $('#chess').append('<span class="chessman" data-role="blue" data-id=\"'+chessmans.blue[i].id+'\"><span>'+chessmans.blue[i].text+'</span></span>');
+
+            $('#chess').children().eq($('#chess').children().length-1).css({
+                "top":chessmans.blue[i].y,
+                "left":chessmans.blue[i].x
+            });
+
+        }
+
+        for(var i = 0; i < chessmans.red.length; i++){
+            $('#chess').append('<span class="chessman chessman1" data-role="red" data-id=\"'+chessmans.red[i].id+'\"><span>'+chessmans.red[i].text+'</span></span>');
+
+            $('#chess').children().eq($('#chess').children().length-1).css({
+                "top":chessmans.red[i].y,
+                "left":chessmans.red[i].x
+            });
+
+        }
+    }
+    function clearGame() {
+        $('#chess').empty();
+    }
+
+    // 当前可 活动 的棋子
+    var $curr = null;
+
+    // 1.isUp 当前棋子是否是可移动状态，isUp为true的时候，才可以落子
+    // 2.isUp 默认是false，即不可落子（这个时候没有选中任何棋子）
+    // 3.当点击某棋子时，通过isUp判断是要起子还是落子
+    // 4.isUp为false时，点击棋子时，为起子操作，isUp置为true
+    // 5.isUp为true时，点击棋子时，为落子操作，落子完成后，isUp置为false;
+    var isUp = false;
+
+    // 当前可下棋的角色，红方或蓝方
+    var curr_role = 'red';
+
+    socket.on('socketId',function (data) {
+        console.log('my:',data);
+        myId = data.id;
+        curr_role = data.role;
+    })
+
+    Array.prototype.hasChess = function (id,x,y) {
+        for(let i = 0;i<this.length;i++){
+            if(this[i].id != id && this[i].x == x && this[i].y == y){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Array.prototype.eatEnemies = function (x,y) {
+        for(let i = 0;i<this.length;i++){
+            if(this[i].x == x && this[i].y == y){
+                return this[i].id;
+            }
+        }
+        return "";
+    }
+
+    function getIndex(role,id) {
+
+        for(var i=0;i<chessmans[role].length;i++){
+            if(chessmans[role][i].id == id ){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // 判断下落点是否有其他棋子，如果该棋子是己方棋子则直接return;
+    // 如果该棋子是对方棋子，则吃掉该棋子
+
+    var rule_base = {
+
+        "horse":function(chess, x, y){
+
+            // 获取落点位置
+            var pos = getRelativePos(chess,x,y);
+
+            // 如果走法不是按照'日'字格走则返回。
+            if(Math.abs(pos.x)/Math.abs(pos.y) != 2 && Math.abs(pos.y)/Math.abs(pos.x) != 2){
+                console.error('马','请按日字格走')
+                return chess;
+            }
+            // 如果是按'日'字格，但是较长的那一边不能有棋子
+            if(hasChess(Math.abs(pos.x)/Math.abs(pos.y) == 2 ? (x+chess.x)/2 : chess.x , Math.abs(pos.x)/Math.abs(pos.y) == 2 ? chess.y : (y+chess.y)/2)){
+                console.error('马','有障碍');
+                return chess;
+            }
+            // 棋子下落
+            return landing(chess,x,y);
+
+            // 判断逻辑太落后，弃用
+            // var arr = [{x:-100,y:-50},{x:-50,y:-100},{x:50,y:-100},{x:100,y:-50},{x:100,y:50},{x:50,y:100},{x:-50,y:100},{x:-100,y:50}]
+            //
+            // for(let i = 0;i<arr.length;i++){
+            //
+            //     if(x-chess.x == arr[i].x && y-chess.y == arr[i].y){
+            //         return landing(chess,x,y);
+            //     }
+            // }
+            // return chess;
+
+        },
+        "car":function (chess, x, y) {
+            // 判断是否是直线
+            if(chess.x != x && chess.y != y){
+                console.error('车',"请走直线");
+                return chess;
+            }
+            // 移动路线中间不能有其他棋子
+            var count = countChessBetweenRoute(chess,x,y);
+
+            if(count != 0){
+                // 中间有棋子 ，走不了
+                console.error('车',"不能跨越棋子")
+                return chess;
+            }
+            // 中间没有棋子 可以走
+            return landing(chess,x,y);
+
+        },
+        "soldier":function (chess, x, y) {
+            // 判断是否合乎规则 未过界时，只能朝一个方向走，过界后，不能往后走
+            // 首先判断是否只走了一格
+
+            var pos = getRelativePos(chess, x, y);
+
+            if ((chess.x == x && Math.abs(chess.y - y) / 50 === 1) || (chess.y == y && Math.abs(chess.x - x) / 50 === 1)) {
+                // 只走了一格
+                // 判断当前是都过界
+                if (checkBound(chess, x, y)) {
+                    // 过界
+                    // 过界了棋子只能"向前、左、右"走一格，不能往后走
+                    if (chess.role == 'blue' && (Math.abs(pos.x) > 1 || (Math.abs(pos.x) == 0 && pos.y != 1))) {
+                        return chess;
+                    }
+                    if (chess.role == 'red' && (Math.abs(pos.x) > 1 || (Math.abs(pos.x) == 0 && pos.y != -1))) {
+                        return chess;
+                    }
+
+                } else {
+                    // 没有过界
+                    // 判断是否是只向前走了一格
+                    if (chess.role == 'blue' && (Math.abs(pos.x) > 0 || (pos.y != 1 && Math.abs(pos.x) == 0))) {
+                        return chess;
+                    }
+                    if (chess.role == 'red' && (Math.abs(pos.x) > 0 || (pos.y != -1 && Math.abs(pos.x) == 0))) {
+                        return chess;
+                    }
+                }
+            } else {
+                return chess;
+            }
+
+            return landing(chess,x,y);
+        },
+        "gun":function (chess,x,y) {
+            // 获取落点位置
+            var pos = getRelativePos(chess,x,y);
+            // 获取中间经过的棋子的数量
+            var count = countChessBetweenRoute(chess,x,y);
+
+            // 如果不是直线或者中间棋子数量不是1或者大于1，则返回
+            if((Math.abs(pos.x) > 0 && Math.abs(pos.y) > 0) || count > 1){
+                return chess;
+            }
+
+            // 如果是跨越某个棋子，落点必须是地方棋子，否则走法无效
+            if(count == 1 &&!chessmans[chess.role == 'blue'? 'red':'blue'].hasChess(chess.id, x, y)){
+                return chess;
+            }
+
+            return landing(chess,x,y);
+        },
+        "elephant":function (chess,x,y) {
+            // 获取落点位置
+            var pos = getRelativePos(chess,x,y);
+            // 获取中间经过的棋子的数量
+            var count = countChessBetweenRoute(chess,x,y);
+
+            // 不能过界
+            if(chess.role == 'blue' && y > 200){
+                return chess;
+            }
+            if(chess.role == 'red' && y < 250){
+                return chess;
+            }
+
+            // 象的规则
+            if(Math.abs(pos.x) != 2 || Math.abs(pos.y) != 2){
+                return chess;
+            }
+            // 走田字格中间不能有棋子
+            if(hasChess((chess.x+x)/2,(chess.y+y)/2)){
+                return chess;
+            }
+
+            return landing(chess,x,y);
+        },
+        "knight":function (chess,x,y) {
+            // 是否在活动范围内
+            if(x<150 || x > 250){
+                return chess;
+            }
+            var yy = y > 200 ? y - 350: y;
+            if(yy < 0 ||yy > 100){
+                return chess;
+            }
+            var pos = getRelativePos(chess,x,y);
+            // 士的规则
+            if(Math.abs(pos.x) != 1 || Math.abs(pos.y) !=1){
+                return chess;
+            }
+
+            return landing(chess,x,y);
+        },
+        "boss":function (chess,x,y) {
+            // 是否在活动范围内
+            if(x<150 || x > 250){
+                return chess;
+            }
+            var yy = y > 200 ? y - 350: y;
+            if(yy < 0 ||yy > 100){
+                return chess;
+            }
+            var pos = getRelativePos(chess,x,y);
+
+            if(pos.x != 0 && pos.y != 0){
+                return chess;
+            }
+            if((pos.x == 0 && Math.abs(pos.y) > 1) || (pos.y == 0 && Math.abs(pos.x) > 1)){
+                return chess;
+            }
+
+            return landing(chess,x,y);
+
+
+        }
+    };
+
+    function landing(chess,x,y) {
+        // 判断下落点是否有其他己方棋子
+        if (chessmans[chess.role].hasChess(chess.id, x, y)) {
+            // 有则直接return
+            return chess;
+        }
+        // 判断落点是否是敌对棋子，是的话则吃点对方棋子
+        var enemy_id = chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
+        if (enemy_id != '') {
+            // 移除该棋子
+            chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
+
+            chess.x = x;
+            chess.y = y;
+
+            // 清空棋盘
+            clearGame();
+
+            // 放置棋子
+            startGame();
+
+            return chess;
+        }
+        chess.x = x;
+        chess.y = y;
+        return chess;
+    }
+
+    // 判断当前走了几个 例如往右下走了一格则返回{x:1,y:1}
+    function getRelativePos(chess,x,y) {
+        return {
+            x:(x-chess.x)/50,
+            y:(y-chess.y)/50
+        }
+    }
+
+    // 判断指定位置是否存在棋子
+    function hasChess(x,y) {
+        var arr = chessmans.blue.concat(chessmans.red);
+
+        for(var i = 0;i<arr.length;i++){
+            if(arr[i].x == x && arr[i].y == y){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function checkBound(chess,x,y){
+        //判断是红方还是蓝方棋子
+        if(chess.role == 'blue' && y > 200){
+            return true;
+        }
+        if(chess.role == 'red' && y < 250){
+            return true
+        }
+        return false
+    }
+
+    function countChessBetweenRoute(chess,x,y) {
+        var count = 0;
+        var arr = chessmans.blue.concat(chessmans.red);
+        if(chess.x == x){
+            // 判断竖轴
+            for(let i = 0 ; i<arr.length; i++){
+                if(arr[i].y<Math.max(chess.y,y) && arr[i].y > Math.min(chess.y,y) && arr[i].x == x){
+                    count ++;
+                }
+            }
+
+        }else{
+            // 判断横轴
+            for(let i = 0 ; i<arr.length; i++){
+                if(arr[i].x<Math.max(chess.x,x) && arr[i].x > Math.min(chess.x,x) && arr[i].y == y){
+                    count ++;
+                }
+            }
+        }
+        return count;
+    }
+    function getChess(dataset){
+
+        var arr = chessmans[dataset.role];
+
+        for (let i = 0;i<arr.length; i++){
+            if(arr[i].id == dataset.id){
+                return arr[i];
+            }
+        }
+
+        return "";
+    }
+
+    // Jquery 方式 监听棋子点击事件
+    $('#chess').on('click',function (ev) {
+
+        // 是否轮到当前角色下棋，即红蓝方依次落子
+
+        if(curr_role != $(ev.target).parent().data().role){
+            console.error('未轮到',$(ev.target).parent().data().role,'下棋');
+
+            return ;
+        }
+
+        if(isUp){
+
+            var dataset =  $(ev.target).parent().data();
+
+            var xx = ev.originalEvent.x || ev.originalEvent.layerX || 0;
+            var yy = ev.originalEvent.y || ev.originalEvent.layerY || 0;
+            var x = xx-document.getElementById('chess').getBoundingClientRect().x;
+            var y = yy-document.getElementById('chess').getBoundingClientRect().y;
+
+            // 判断是否出界
+            if(x<0 || y < 0 || x > 400 || y > 450 ){
+                // 出界
+                return
+            }
+
+            // 将xx和yy转为标准的点坐标
+            var x1 = x % 100 ;
+            var x2 = 0;
+            if(x1>25 && x1 < 75){
+                x2 = 50;
+            }
+            if(x1 >= 76 && x1 <100){
+                x2 = 100;
+            }
+            var x = Math.floor(x/100)*100 + x2;
+
+            var y1 = y % 100 ;
+
+            var y2 = 0;
+            if(y1>25 && y1 < 75){
+                y2 = 50;
+            }
+            if(y1 >= 76 && y1 <100){
+                y2 = 100;
+            }
+            var y = Math.floor(y/100)*100 + y2;
+
+
+            var chess = getChess(dataset);
+
+            // 验证棋子是否成功落子。即结束本方回合
+            var prev_x = chess.x;
+            var prev_y = chess.y;
+
+            var new_chess = rule_base[chess.type](chess,x,y);
+
+            $curr.css({
+                "top":new_chess.y,
+                "left":new_chess.x
+            })
+
+            // 落子成功，则转变角色，如果没有落子成功，棋子回到原处，不转变角色
+            if(new_chess.x !== prev_x || new_chess.y !== prev_y){
+                // c判断当前角色的胜负
+                if(checkResult(curr_role)){
+                    //如果当前赢了
+                    var a = curr_role == 'blue'?'蓝方':'红方'
+                    alert('恭喜'+a+'获胜');
+                }
+                curr_role = curr_role == 'blue'?'red':'blue';
+
+                // 将信息传至服务器
+                socket.emit('chess', {chess:new_chess,id:myId});
+            }
+
+
+
+            $curr.removeClass('high-index');
+            $curr = null
+            isUp = false;
+        }else{
+            $curr = $(ev.target).parent()
+            $curr.addClass('high-index');
+            isUp = true;
+        }
+    })
+    $(document).on('mousemove',function (ev) {
+        //console.log(document.getElementById('chess').getBoundingClientRect());
+        if($curr !== null){
+            var xx = ev.originalEvent.x || ev.originalEvent.layerX || 0;
+            var yy = ev.originalEvent.y || ev.originalEvent.layerY || 0;
+            $curr.css({
+                "top":yy-document.getElementById('chess').getBoundingClientRect().y,
+                "left":xx-document.getElementById('chess').getBoundingClientRect().x
+            })
+        }
+    })
+
+    // 更新
+    socket.on('fresh',function (data) {
+        console.log(data);
+    })
+
+    // 判断胜负
+    function checkResult(role) {
+        var arr = chessmans[role == 'blue'? 'red':'blue'];
+        for(let i = 0;i<arr.length;i++){
+            if(arr[i].type == 'boss'){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // JavaScript 原生方式监听棋子点击事件
+
+    function drawboard(){
+        // 棋盘背景
+        gamebg_ctx.fillStyle = '#EEE685';
+        gamebg_ctx.fillRect(0,0,410,460);
+
+        // 棋盘边界
+        gamebg_ctx.strokeStyle = '#CD3700';
+        gamebg_ctx.strokeRect(5,5,400,450);
+
+        // 绘制线条
+        for(var i = 0; i < 9; i++){
+            // 横线
+            gamebg_ctx.strokeStyle = '#CD3700';
+            gamebg_ctx.beginPath();
+            gamebg_ctx.moveTo(5,i*50+5);
+            gamebg_ctx.lineTo(8*50+5,i*50+5);
+            gamebg_ctx.stroke();
+        }
+
+        for (var i = 0; i< 8;i++){
+            // 竖线
+            gamebg_ctx.beginPath();
+            gamebg_ctx.moveTo(50*i+5,5);
+            gamebg_ctx.lineTo(50*i+5,205);
+            gamebg_ctx.stroke();
+
+            gamebg_ctx.beginPath();
+            gamebg_ctx.moveTo(50*i+5,255);
+            gamebg_ctx.lineTo(50*i+5,455);
+            gamebg_ctx.stroke();
+        }
+
+        // 大本营
+        gamebg_ctx.beginPath();
+        gamebg_ctx.moveTo(155,5);
+        gamebg_ctx.lineTo(255,105);
+        gamebg_ctx.stroke();
+
+        gamebg_ctx.beginPath();
+        gamebg_ctx.moveTo(255,5);
+        gamebg_ctx.lineTo(155,105);
+        gamebg_ctx.stroke();
+
+        gamebg_ctx.beginPath();
+        gamebg_ctx.moveTo(155,355);
+        gamebg_ctx.lineTo(255,455);
+        gamebg_ctx.stroke();
+
+        gamebg_ctx.beginPath();
+        gamebg_ctx.moveTo(255,355);
+        gamebg_ctx.lineTo(155,455);
+        gamebg_ctx.stroke();
+
+        // 绘制文字
+        gamebg_ctx.fillStyle = '#CD3700';
+        gamebg_ctx.font="30px STKaiti";
+        gamebg_ctx.fillText("楚河         汉界",110,240);
+        gamebg_ctx.rotate(90);
+    }
+
+
+</script>
+</html>
