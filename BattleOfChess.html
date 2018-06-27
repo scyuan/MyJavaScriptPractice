@@ -71,6 +71,9 @@
             background: #fff;
             z-index: 999;
         }
+        .rotate{
+            transform: translate(-50%,-50%) rotate(180deg);
+        }
 
     </style>
 </head>
@@ -93,6 +96,7 @@
 <script src="js/socket.io.js"></script>
 </body>
 <script src="js/jquery-3.2.0.min.js"></script>
+<script src="js/chess.js"></script>
 <script>
 
     // 测试websocket
@@ -102,309 +106,22 @@
     var socket = io('http://127.0.0.1:3001');
 
     var myId = '';
-
-
     var gameBg_canvas = document.getElementById('gameBg');
     var gamebg_ctx = gameBg_canvas.getContext('2d');
 
     drawboard();
 
-    var car_1 = {
-        role:'blue',
-        type:'car',
-        text:'车',
-        id:'1',
-        x:0,
-        y:0,
-    }
-    var car_2 = {
-        role:'blue',
-        type:'car',
-        text:'车',
-        id:'2',
-        x:400,
-        y:0,
-    }
-    var car_3 = {
-        role:'red',
-        type:'car',
-        text:'車',
-        id:'3',
-        x:0,
-        y:450,
-    }
-    var car_4 = {
-        role:'red',
-        type:'car',
-        text:'車',
-        id:'5',
-        x:400,
-        y:450,
-    }
-
-    var horse_1 = {
-        role:'blue',
-        type:'horse',
-        text:'马',
-        id:'6',
-        x:50,
-        y:0,
-    }
-    var horse_2 = {
-        role:'blue',
-        type:'horse',
-        text:'马',
-        id:'7',
-        x:350,
-        y:0,
-    }
-    var horse_3 = {
-        role:'red',
-        type:'horse',
-        text:'馬',
-        id:'8',
-        x:50,
-        y:450,
-    }
-    var horse_4 = {
-        role:'red',
-        type:'horse',
-        text:'馬',
-        x:350,
-        id:'4',
-        y:450,
-    }
-    var elephant_1 ={
-        role:'blue',
-        type:'elephant',
-        text:'象',
-        id:'9',
-        x:100,
-        y:0,
-    }
-    var elephant_2 ={
-        role:'blue',
-        type:'elephant',
-        text:'象',
-        x:300,
-        id:'10',
-        y:0,
-    }
-    var elephant_3 ={
-        role:'red',
-        type:'elephant',
-        text:'相',
-        id:'11',
-        x:100,
-        y:450,
-    }
-    var elephant_4 ={
-        role:'red',
-        type:'elephant',
-        text:'相',
-        id:'12',
-        x:300,
-        y:450,
-    }
-    var knight_1 ={
-        role:'blue',
-        type:'knight',
-        text:'士',
-        id:'32',
-        x:150,
-        y:0,
-    }
-    var knight_2 ={
-        role:'blue',
-        type:'knight',
-        text:'士',
-        id:'13',
-        x:250,
-        y:0,
-    }
-    var knight_3 ={
-        role:'red',
-        type:'knight',
-        text:'士',
-        id:'14',
-        x:150,
-        y:450,
-    }
-    var knight_4 ={
-        role:'red',
-        type:'knight',
-        text:'士',
-        x:250,
-        id:'15',
-        y:450,
-    }
-    var boss_1 = {
-        role:'blue',
-        type:'boss',
-        text:'将',
-        id:'16',
-        x:200,
-        y:0,
-    }
-    var boss_2 = {
-        role:'red',
-        type:'boss',
-        text:'帥',
-        id:'17',
-        x:200,
-        y:450,
-    }
-    var gun_1 = {
-
-        role:'blue',
-        type:'gun',
-        text:'炮',
-        id:'18',
-        x:50,
-        y:100
-    }
-    var gun_2 = {
-        role:'blue',
-        type:'gun',
-        text:'炮',
-        id:'19',
-        x:350,
-        y:100
-    }
-    var gun_3 = {
-        role:'red',
-        type:'gun',
-        text:'炮',
-        id:'20',
-        x:50,
-        y:350
-    }
-    var gun_4 = {
-        role:'red',
-        type:'gun',
-        text:'炮',
-        id:'21',
-        x:350,
-        y:350
-    }
-    var soldier_1 = {
-        role:'blue',
-        type:'soldier',
-        text:'卒',
-        id:'22',
-        x:0,
-        y:150
-    }
-    var soldier_2 = {
-        role:'blue',
-        type:'soldier',
-        text:'卒',
-        id:'23',
-        x:100,
-        y:150
-    }
-    var soldier_3 = {
-        role:'blue',
-        type:'soldier',
-        text:'卒',
-        id:'24',
-        x:200,
-        y:150
-    }
-    var soldier_4 = {
-        role:'blue',
-        type:'soldier',
-        text:'卒',
-        id:'25',
-        x:300,
-        y:150
-    }
-    var soldier_5 = {
-        role:'red',
-        type:'soldier',
-        text:'卒',
-        id:'26',
-        x:400,
-        y:150
-    }
-
-    var soldier_6 = {
-        role:'red',
-        type:'soldier',
-        text:'兵',
-        id:'27',
-        x:0,
-        y:300
-    }
-    var soldier_7 = {
-        role:'red',
-        text:'兵',
-        type:'soldier',
-        id:'28',
-        x:100,
-        y:300
-    }
-    var soldier_8 = {
-        role:'red',
-        type:'soldier',
-        text:'兵',
-        id:'29',
-        x:200,
-        y:300
-    }
-    var soldier_9 = {
-        role:'red',
-        type:'soldier',
-        text:'兵',
-        id:'30',
-        x:300,
-        y:300
-    }
-    var soldier_10 = {
-        role:'red',
-        type:'soldier',
-        text:'兵',
-        id:'31',
-        x:400,
-        y:300
-    }
-
+    var car_1, car_2, car_3, car_4, horse_1, horse_2, horse_3, horse_4, elephant_1, elephant_2, elephant_3,
+        elephant_4, knight_1, knight_2, knight_3, knight_4, boss_1, boss_2, gun_1, gun_2, gun_3, gun_4,
+        soldier_1, soldier_2, soldier_3, soldier_4, soldier_5, soldier_6, soldier_7,soldier_8, soldier_9, soldier_10;
 
     var chessmans = {
         "blue":[],
         "red":[]
     };
+
     chessmans.blue = [car_1,car_2,horse_1,horse_2,elephant_1,elephant_2,knight_1,knight_2,boss_1,gun_1,gun_2,soldier_1,soldier_2,soldier_3,soldier_4,soldier_5];
     chessmans.red = [car_3,car_4,horse_3,horse_4,elephant_3,elephant_4,knight_3,knight_4,boss_2,gun_3,gun_4,soldier_6,soldier_7,soldier_8,soldier_9,soldier_10];
-    startGame();
-
-    function startGame() {
-        // 初始化棋子
-
-
-        for(var i = 0; i < chessmans.blue.length; i++){
-            $('#chess').append('<span class="chessman" data-role="blue" data-id=\"'+chessmans.blue[i].id+'\"><span>'+chessmans.blue[i].text+'</span></span>');
-
-            $('#chess').children().eq($('#chess').children().length-1).css({
-                "top":chessmans.blue[i].y,
-                "left":chessmans.blue[i].x
-            });
-
-        }
-
-        for(var i = 0; i < chessmans.red.length; i++){
-            $('#chess').append('<span class="chessman chessman1" data-role="red" data-id=\"'+chessmans.red[i].id+'\"><span>'+chessmans.red[i].text+'</span></span>');
-
-            $('#chess').children().eq($('#chess').children().length-1).css({
-                "top":chessmans.red[i].y,
-                "left":chessmans.red[i].x
-            });
-
-        }
-    }
-    function clearGame() {
-        $('#chess').empty();
-    }
 
     // 当前可 活动 的棋子
     var $curr = null;
@@ -421,11 +138,20 @@
 
     var canChess = false;
 
+    startGame();
+
     socket.on('socketId',function (data) {
         console.log('my:',data);
         myId = data.id;
         curr_role = data.role;
         canChess = data.canChess;
+
+        initChessmans();
+
+        clearGame();
+
+        startGame();
+
     })
 
     Array.prototype.hasChess = function (id,x,y) {
@@ -639,16 +365,12 @@
         if (enemy_id != '') {
             // 移除该棋子
             chessmans[chess.role == "blue" ? "red" : "blue"].splice(getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
-
             chess.x = x;
             chess.y = y;
-
             // 清空棋盘
             clearGame();
-
             // 放置棋子
             startGame();
-
             return chess;
         }
         chess.x = x;
@@ -834,7 +556,6 @@
                 }else{
                     canChess = false;
                 }
-
                 // 清空棋盘
                 clearGame();
 
@@ -845,6 +566,24 @@
         }
     })
 
+    //
+    socket.on('info',function (data) {
+        console.log(data.info);
+    })
+    socket.on('someone_disconnect',function (data) {
+        console.log(data.info);
+
+        initChessmans();
+        // 清空棋盘
+        clearGame();
+        console.log(chessmans);
+        // 放置棋子
+        startGame();
+
+        //
+        canChess = false;
+
+    })
     // 判断胜负
     function checkResult(role) {
         var arr = chessmans[role == 'blue'? 'red':'blue'];
@@ -917,7 +656,305 @@
         gamebg_ctx.fillText("楚河         汉界",110,240);
         gamebg_ctx.rotate(90);
     }
+    function startGame() {
+        // 初始化棋子
 
+
+        for(var i = 0; i < chessmans.blue.length; i++){
+            $('#chess').append('<span class="chessman" data-role="blue" data-id=\"'+chessmans.blue[i].id+'\"><span>'+chessmans.blue[i].text+'</span></span>');
+
+            $('#chess').children().eq($('#chess').children().length-1).css({
+                "top":chessmans.blue[i].y,
+                "left":chessmans.blue[i].x
+            });
+
+        }
+
+        for(var i = 0; i < chessmans.red.length; i++){
+            $('#chess').append('<span class="chessman chessman1" data-role="red" data-id=\"'+chessmans.red[i].id+'\"><span>'+chessmans.red[i].text+'</span></span>');
+
+            $('#chess').children().eq($('#chess').children().length-1).css({
+                "top":chessmans.red[i].y,
+                "left":chessmans.red[i].x
+            });
+
+        }
+    }
+
+    function initChess() {
+        car_1 = {
+            role:'blue',
+            type:'car',
+            text:'车',
+            id:'1',
+            x:0,
+            y:0,
+        }
+        car_2 = {
+            role:'blue',
+            type:'car',
+            text:'车',
+            id:'2',
+            x:400,
+            y:0,
+        }
+        car_3 = {
+            role:'red',
+            type:'car',
+            text:'車',
+            id:'3',
+            x:0,
+            y:450,
+        }
+        car_4 = {
+            role:'red',
+            type:'car',
+            text:'車',
+            id:'5',
+            x:400,
+            y:450,
+        }
+
+        horse_1 = {
+            role:'blue',
+            type:'horse',
+            text:'马',
+            id:'6',
+            x:50,
+            y:0,
+        }
+        horse_2 = {
+            role:'blue',
+            type:'horse',
+            text:'马',
+            id:'7',
+            x:350,
+            y:0,
+        }
+        horse_3 = {
+            role:'red',
+            type:'horse',
+            text:'馬',
+            id:'8',
+            x:50,
+            y:450,
+        }
+        horse_4 = {
+            role:'red',
+            type:'horse',
+            text:'馬',
+            x:350,
+            id:'4',
+            y:450,
+        }
+        elephant_1 ={
+            role:'blue',
+            type:'elephant',
+            text:'象',
+            id:'9',
+            x:100,
+            y:0,
+        }
+        elephant_2 ={
+            role:'blue',
+            type:'elephant',
+            text:'象',
+            x:300,
+            id:'10',
+            y:0,
+        }
+        elephant_3 ={
+            role:'red',
+            type:'elephant',
+            text:'相',
+            id:'11',
+            x:100,
+            y:450,
+        }
+        elephant_4 ={
+            role:'red',
+            type:'elephant',
+            text:'相',
+            id:'12',
+            x:300,
+            y:450,
+        }
+        knight_1 ={
+            role:'blue',
+            type:'knight',
+            text:'士',
+            id:'32',
+            x:150,
+            y:0,
+        }
+        knight_2 ={
+            role:'blue',
+            type:'knight',
+            text:'士',
+            id:'13',
+            x:250,
+            y:0,
+        }
+        knight_3 ={
+            role:'red',
+            type:'knight',
+            text:'士',
+            id:'14',
+            x:150,
+            y:450,
+        }
+        knight_4 ={
+            role:'red',
+            type:'knight',
+            text:'士',
+            x:250,
+            id:'15',
+            y:450,
+        }
+        boss_1 = {
+            role:'blue',
+            type:'boss',
+            text:'将',
+            id:'16',
+            x:200,
+            y:0,
+        }
+        boss_2 = {
+            role:'red',
+            type:'boss',
+            text:'帥',
+            id:'17',
+            x:200,
+            y:450,
+        }
+        gun_1 = {
+
+            role:'blue',
+            type:'gun',
+            text:'炮',
+            id:'18',
+            x:50,
+            y:100
+        }
+        gun_2 = {
+            role:'blue',
+            type:'gun',
+            text:'炮',
+            id:'19',
+            x:350,
+            y:100
+        }
+        gun_3 = {
+            role:'red',
+            type:'gun',
+            text:'炮',
+            id:'20',
+            x:50,
+            y:350
+        }
+        gun_4 = {
+            role:'red',
+            type:'gun',
+            text:'炮',
+            id:'21',
+            x:350,
+            y:350
+        }
+        soldier_1 = {
+            role:'blue',
+            type:'soldier',
+            text:'卒',
+            id:'22',
+            x:0,
+            y:150
+        }
+        soldier_2 = {
+            role:'blue',
+            type:'soldier',
+            text:'卒',
+            id:'23',
+            x:100,
+            y:150
+        }
+        soldier_3 = {
+            role:'blue',
+            type:'soldier',
+            text:'卒',
+            id:'24',
+            x:200,
+            y:150
+        }
+        soldier_4 = {
+            role:'blue',
+            type:'soldier',
+            text:'卒',
+            id:'25',
+            x:300,
+            y:150
+        }
+        soldier_5 = {
+            role:'red',
+            type:'soldier',
+            text:'卒',
+            id:'26',
+            x:400,
+            y:150
+        }
+
+        soldier_6 = {
+            role:'red',
+            type:'soldier',
+            text:'兵',
+            id:'27',
+            x:0,
+            y:300
+        }
+        soldier_7 = {
+            role:'red',
+            text:'兵',
+            type:'soldier',
+            id:'28',
+            x:100,
+            y:300
+        }
+        soldier_8 = {
+            role:'red',
+            type:'soldier',
+            text:'兵',
+            id:'29',
+            x:200,
+            y:300
+        }
+        soldier_9 = {
+            role:'red',
+            type:'soldier',
+            text:'兵',
+            id:'30',
+            x:300,
+            y:300
+        }
+        soldier_10 = {
+            role:'red',
+            type:'soldier',
+            text:'兵',
+            id:'31',
+            x:400,
+            y:300
+        }
+    }
+
+    function initChessmans() {
+        chessmans = {
+            "blue":[],
+            "red":[]
+        };
+        chessmans.blue = [car_1,car_2,horse_1,horse_2,elephant_1,elephant_2,knight_1,knight_2,boss_1,gun_1,gun_2,soldier_1,soldier_2,soldier_3,soldier_4,soldier_5];
+        chessmans.red = [car_3,car_4,horse_3,horse_4,elephant_3,elephant_4,knight_3,knight_4,boss_2,gun_3,gun_4,soldier_6,soldier_7,soldier_8,soldier_9,soldier_10];
+    }
+
+    function clearGame() {
+        $('#chess').empty();
+    }
 
 </script>
 </html>

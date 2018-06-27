@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>象棋</title>
+    <style>
+        .wrapper{
+            width: 410px;
+            height: 460px;
+            position: fixed;
+            border: 2px solid #CD3700;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .chess{
+            width: 400px;
+            height: 450px;
+            z-index: 99;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .chessman{
+            transform: translate(-50%,-50%);
+            position: fixed;
+            z-index: 99;
+            width: 40px;
+            height: 40px;
+            border-radius: 26px;
+            text-align: center;
+            line-height: 31px;
+            font-size: 27px;
+            font-family: 'STKaiti';
+            font-weight: bold;
+            color: rgb(32,26,102);
+            border: 1px solid rgb(151,124,102);
+            background: rgb(241,206,172);
+            box-sizing: border-box;
+            box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            /*transition: all .3s;*/
+
+        }
+        .chessman1{
+            color: rgb(201,58,44);
+        }
+        .chessman>span{
+            display: block;
+            width: 34px;
+            height: 34px;
+            border-radius: 17px;
+            border: 1px solid rgb(151,124,102);
+        }
+        .high-index{
+            z-index: 999;
+        }
+        .modal{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+            z-index: 999;
+        }
+        .rotate{
+            transform: translate(-50%,-50%) rotate(180deg);
+        }
+
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <canvas id="gameBg" width="410" height="460"></canvas>
+</div>
+<div class="chess" id="chess">
+
+</div>
+
+<script src="js/socket.io.js"></script>
+</body>
+<script src="js/jquery-3.2.0.min.js"></script>
+<script src="js/chess.js"></script>
+<script>
+
+    var chess = new Chess({
+        game_el:'#chess',
+        canvas_el:'gameBg'
+    });
+
+    chess.connetNet('http://127.0.0.1:3001');
+
+</script>
+</html>
