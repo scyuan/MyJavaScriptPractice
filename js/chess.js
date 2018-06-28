@@ -33,6 +33,7 @@
         myId : '',
         curr_role :'',
         canChess : false,
+        rooms:[],
         _initGame:function (opt) {
             var _this = this;
             this.options = {
@@ -320,7 +321,7 @@
             var _this = this;
             $(this.options.game_el).on('click',function (ev) {
                 if(!_this.canChess){
-                    console.log('为轮到自己，请稍后');
+                    console.log('未轮到自己，请稍后');
                     return ;
                 }
 
@@ -753,62 +754,24 @@
 
             }
         },
+        getRooms:function () {
+          return this.rooms;
+        },
 
         connetNet:function (url) {
             var _this = this;
-            this.socket = io(url);
-            this.socket.on('info',function (data) {
-                console.log(data.info);
-            })
-            this.socket.on('someone_disconnect',function (data) {
-                console.log(data.info);
+            return new Promise(function(resolve, reject){
+                _this.socket = io(url);
 
-                // 清空棋盘
-                _this.clearGame();
-                // 初始化棋子内容
-                _this._initChess();
-                // 绘制棋子
-                _this._drawChess();
-
-            })
-            this.socket.on('socketId',function (data) {
-                console.log('my:',data);
-
-                _this.myId = data.id;
-                _this.curr_role = data.role;
-                _this.canChess = data.canChess;
-            })
-            // 更新
-            this.socket.on('fresh',function (data) {
-                console.log(data);
-                var arr = _this.chessmans[data.chess.role];
-                for(let i =0;i<arr.length;i++){
-                    if(arr[i].id == data.chess.id){
-                        arr[i].x = data.chess.x;
-                        arr[i].y = data.chess.y;
-
-                        if(data.chess.role != _this.curr_role){
-                            _this.canChess = true;
-                        }else{
-                            _this.canChess = false;
-                        }
-                        // 清空棋盘
-                        _this.clearGame();
-                        // 绘制棋子
-                        _this._drawChess();
-                        return ;
-                    }
+                if(_this.socket == null || _this.socket == undefined){
+                    reject('未连接上');
+                }else{
+                    resolve(_this.socket);
                 }
-            })
+            });
 
-            //监听移除信息
-            this.socket.on('remove',function (data) {
 
-                _this.chessmans[data.chess.role].splice(_this.getIndex(data.chess.role == "blue" ? "red" : "blue", data.chess.id), 1);
-                // 清空棋盘
-                _this.clearGame();
-                // 绘制棋子
-                _this._drawChess();
-            })
+
+
         }
     })

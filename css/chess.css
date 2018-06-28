@@ -1,0 +1,143 @@
+body{
+    padding: 0;
+}
+.wrapper{
+    width: 410px;
+    height: 460px;
+    position: absolute;
+    border: 2px solid #CD3700;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.chess{
+    width: 400px;
+    height: 450px;
+    z-index: 99;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.chessman{
+    transform: translate(-50%,-50%);
+    position: fixed;
+    z-index: 99;
+    width: 40px;
+    height: 40px;
+    border-radius: 26px;
+    text-align: center;
+    line-height: 31px;
+    font-size: 27px;
+    font-family: 'STKaiti';
+    font-weight: bold;
+    color: rgb(32,26,102);
+    border: 1px solid rgb(151,124,102);
+    background: rgb(241,206,172);
+    box-sizing: border-box;
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    /*transition: all .3s;*/
+
+}
+.chessman1{
+    color: rgb(201,58,44);
+}
+.chessman>span{
+    display: block;
+    width: 34px;
+    height: 34px;
+    border-radius: 17px;
+    border: 1px solid rgb(151,124,102);
+}
+.high-index{
+    z-index: 999;
+}
+.modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    z-index: 999;
+}
+.rotate{
+    transform: translate(-50%,-50%) rotate(180deg);
+}
+.area{
+    position: fixed;
+    top: 0;
+    height: 100%;
+}
+.game-area{
+    width: 70%;
+    left: 0;
+    background: blanchedalmond;
+}
+.info-area{
+    width: 30%;
+    right: 0;
+    background: cadetblue;
+}
+.input-login{
+    width: 80%;
+    margin: 30px auto;
+}
+.input-login input{
+    width: 100%;
+    border: 0;
+    outline: 0;
+    text-align: center;
+    height: 36px;
+    border-radius: 18px;
+}
+.input-login button{
+    width: 100%;
+    height: 28px;
+    margin-top: 10px;
+    border-radius: 14px;
+    color: cadetblue;
+}
+.input-login h3{
+    text-align: center;
+}
+.input-login h6{
+    margin: 10px 0;
+}
+.rooms{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.room-item{
+    padding: 0;
+    height: 36px;
+}
+.room-item p{
+    display: inline-block;
+    width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+    line-height: 36px;
+}
+.room-item button{
+    width: 30%;
+    float: right;
+    margin: 0;
+    height: 36px;
+}
+.alert{
+    text-align: center;
+    margin: 5px 0;
+    font-size: 12px;
+    color: white;
+}

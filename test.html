@@ -3,87 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>象棋</title>
-    <style>
-        .wrapper{
-            width: 410px;
-            height: 460px;
-            position: fixed;
-            border: 2px solid #CD3700;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-        }
-        .chess{
-            width: 400px;
-            height: 450px;
-            z-index: 99;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-        }
-        .chessman{
-            transform: translate(-50%,-50%);
-            position: fixed;
-            z-index: 99;
-            width: 40px;
-            height: 40px;
-            border-radius: 26px;
-            text-align: center;
-            line-height: 31px;
-            font-size: 27px;
-            font-family: 'STKaiti';
-            font-weight: bold;
-            color: rgb(32,26,102);
-            border: 1px solid rgb(151,124,102);
-            background: rgb(241,206,172);
-            box-sizing: border-box;
-            box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            /*transition: all .3s;*/
-
-        }
-        .chessman1{
-            color: rgb(201,58,44);
-        }
-        .chessman>span{
-            display: block;
-            width: 34px;
-            height: 34px;
-            border-radius: 17px;
-            border: 1px solid rgb(151,124,102);
-        }
-        .high-index{
-            z-index: 999;
-        }
-        .modal{
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #fff;
-            z-index: 999;
-        }
-        .rotate{
-            transform: translate(-50%,-50%) rotate(180deg);
-        }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/chess.css">
 </head>
 <body>
-<div class="wrapper">
-    <canvas id="gameBg" width="410" height="460"></canvas>
-</div>
-<div class="chess" id="chess">
+<div class="area game-area">
+    <div class="wrapper">
+        <canvas id="gameBg" width="410" height="460"></canvas>
+    </div>
+    <div class="chess" id="chess">
 
+    </div>
 </div>
+<div class="area info-area">
+    <!-- 首先连接游戏 -->
+    <div class="input-login game-login">
+        <h3>象 棋</h3>
+        <input type="text" placeholder="输入游戏昵称" id="nickname">
+        <button id="login">进入游戏</button>
+    </div>
+
+    <!--进入游戏，显示游戏房间，并且有创建房间的按钮-->
+    <div class="input-login game-square" style="display: none;">
+        <h3>象 棋</h3>
+        <input type="text" placeholder="输入房间名称" id="roomname">
+        <button id="addroom">创建房间</button>
+        <h6>房间列表</h6>
+        <ul class="rooms">
+            <p class="alert">暂时没有房间，可先创建房间</p>
+
+        </ul>
+    </div>
+</div>
+
 
 <script src="js/socket.io.js"></script>
 </body>
@@ -96,7 +47,126 @@
         canvas_el:'gameBg'
     });
 
-    chess.connetNet('http://127.0.0.1:3001');
+    function SetCookie(name,value){
+        var Days = 30*12;  //cookie 将被保存一年
+        var exp = new Date(); //获得当前时间
+        exp.setTime(exp.getTime() + Days*24*60*60*1000); //换成毫秒
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+
+    $('#login').on('click',function () {
+        if($('#nickname').val() == ''){
+            console.log('请输入昵称');
+            return;
+        }
+        SetCookie('nickname',$('#nickname').val())
+        var nickname = $('#nickname').val();
+        // http://127.0.0.1:3001默认是大厅，在大厅可以和大厅内的任何人聊天
+        // 获取房间列表
+        chess.connetNet('http://127.0.0.1:3001').then(function (socket) {
+
+            socket.emit('login',{name:nickname});
+
+            socket.on('info',function (data) {
+                console.log(data.info);
+            })
+            socket.on('someone_disconnect',function (data) {
+                console.log(data.info);
+
+                // 清空棋盘
+                chess.clearGame();
+                // 初始化棋子内容
+                chess._initChess();
+                // 绘制棋子
+                chess._drawChess();
+
+            })
+            socket.on('socketId',function (data) {
+                console.log('my:',data);
+
+                chess.myId = data.id;
+                chess.curr_role = data.role;
+                chess.canChess = data.canChess;
+            })
+            // 更新
+            socket.on('fresh',function (data) {
+                console.log(data);
+                var arr = _this.chessmans[data.chess.role];
+                for(let i =0;i<arr.length;i++){
+                    if(arr[i].id == data.chess.id){
+                        arr[i].x = data.chess.x;
+                        arr[i].y = data.chess.y;
+
+                        if(data.chess.role != chess.curr_role){
+                            chess.canChess = true;
+                        }else{
+                            chess.canChess = false;
+                        }
+                        // 清空棋盘
+                        chess.clearGame();
+                        // 绘制棋子
+                        chess._drawChess();
+                        return ;
+                    }
+                }
+            })
+
+            //监听移除信息
+            socket.on('remove',function (data) {
+
+                console.log('remove',data);
+                chess.chessmans[data.chess.role].splice(chess.getIndex(data.chess.role, data.chess.id), 1);
+                // 清空棋盘
+                chess.clearGame();
+                // 绘制棋子
+                chess._drawChess();
+            })
+            // 连接上的反馈信息
+            socket.on('connection_feedback',function (data) {
+                $('.game-login').hide();
+                console.log(data.info);
+                chess.rooms = data.rooms;
+                console.log(chess.rooms);
+                if(chess.rooms.length == 0){
+                    $('.alert').show();
+                }else{
+                    $('.alert').hide();
+                    for(let i =0;i<chess.rooms.length;i++){
+                        $('.rooms').append('<li class="room-item"><p>'+chess.rooms[i].name+'</p><button class="toroom" data-name="'+chess.rooms[i].name+'">加入</button></li>')
+                    }
+                }
+                $('.game-square').show();
+            })
+
+            socket.on('roominfo',function (data) {
+                console.log(data.info);
+            })
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+
+    })
+
+    // 创建房间
+    $('#addroom').on('click',function () {
+        var roomname = $('#roomname').val();
+        if(roomname == ''){
+            return ;
+        }
+
+        chess.socket.emit('create_room',{roomname:roomname});
+    })
+
+    // 加入房间
+    $('.rooms').on('click',function (e) {
+        if($(e.target).data() == '' || $(e.target).data() == undefined || $(e.target).data() == null){
+            return ;
+        }
+        console.log('jiaru')
+        // 加入房间
+        chess.socket.emit('join',{roomname:$(e.target).data().name});
+    })
 
 </script>
 </html>
