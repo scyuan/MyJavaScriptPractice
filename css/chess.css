@@ -141,3 +141,9 @@ body{
     font-size: 12px;
     color: white;
 }
+.startGame{
+    background: #ddd;
+}
+.canStart{
+    background: #fff;
+}
