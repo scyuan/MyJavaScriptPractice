@@ -33,7 +33,7 @@
         myId : '',
         curr_role :'',
         canChess : false,
-        rooms:[],
+        room:{},
         _initGame:function (opt) {
             var _this = this;
             this.options = {
@@ -61,7 +61,7 @@
             }
         },
         hasChess:function(x,y) {
-            var arr = this.chessmans.blue.concat(chessmans.red);
+            var arr = this.chessmans.blue.concat(this.chessmans.red);
 
             for(var i = 0;i<arr.length;i++){
                 if(arr[i].x == x && arr[i].y == y){
@@ -72,7 +72,7 @@
         },
         countChessBetweenRoute:function(chess,x,y) {
             var count = 0;
-            var arr = this.chessmans.blue.concat(chessmans.red);
+            var arr = this.chessmans.blue.concat(this.chessmans.red);
             if(chess.x == x){
                 // 判断竖轴
                 for(let i = 0 ; i<arr.length; i++){
@@ -94,6 +94,10 @@
         getChess:function(dataset){
 
             var arr = this.chessmans[dataset.role];
+
+            if(arr == undefined || arr == null || arr == ''){
+                return "";
+            }
 
             for (let i = 0;i<arr.length; i++){
                 if(arr[i].id == dataset.id){
@@ -144,6 +148,7 @@
                     console.error('车',"请走直线");
                     return chess;
                 }
+                console.log(chess,x,y);
                 // 移动路线中间不能有其他棋子
                 var count = _this.countChessBetweenRoute(chess,x,y);
 
@@ -205,7 +210,7 @@
                 }
 
                 // 如果是跨越某个棋子，落点必须是地方棋子，否则走法无效
-                if(count == 1 &&!chessmans[chess.role == 'blue'? 'red':'blue'].hasChess(chess.id, x, y)){
+                if(count == 1 &&!this.chessmans[chess.role == 'blue'? 'red':'blue'].hasChess(chess.id, x, y)){
                     return chess;
                 }
 
@@ -287,6 +292,16 @@
             }
             return -1;
         },
+        // 判断胜负
+        checkResult:function (role) {
+            var arr = this.chessmans[role == 'blue'? 'red':'blue'];
+            for(let i = 0;i<arr.length;i++){
+                if(arr[i].type == 'boss'){
+                    return false;
+                }
+            }
+            return true;
+        },
         landing:function(chess,x,y) {
             var _this = this;
             // 判断下落点是否有其他己方棋子
@@ -298,7 +313,7 @@
             var enemy_id = this.chessmans[chess.role == "blue" ? "red" : "blue"].eatEnemies(x, y)
             if (enemy_id != '') {
                 // 将需要移除的棋子信息上传至服务器
-                this.socket.emit('eat',{chess:this.chessmans[chess.role == "blue" ? "red" : "blue"][_this.getIndex(chess.role == "blue" ? "red" : "blue", enemy_id)],id:_this.myId});
+                this.socket.emit('eat',{room:_this.room,chess:this.chessmans[chess.role == "blue" ? "red" : "blue"][_this.getIndex(chess.role == "blue" ? "red" : "blue", enemy_id)],id:_this.myId});
 
                 // 移除该棋子
                 this.chessmans[chess.role == "blue" ? "red" : "blue"].splice(_this.getIndex(chess.role == "blue" ? "red" : "blue", enemy_id), 1);
@@ -363,8 +378,11 @@
                     }
                     var y = Math.floor(y/100)*100 + y2;
 
-
                     var chess = _this.getChess(dataset);
+
+                    if(chess == ''){
+                        return ;
+                    }
 
                     // 验证棋子是否成功落子。即结束本方回合
                     var prev_x = chess.x;
@@ -377,10 +395,52 @@
                         "left":new_chess.x
                     })
 
-                    // 将信息传至服务器
-                    _this.socket.emit('chess', {chess:new_chess,id:_this.myId});
+                    // new_chess.y = _this.curr_role == 'red'?new_chess.y:450-new_chess.y;
 
-                    _this.canChess = false;
+                    // 落子成功，则转变角色，如果没有落子成功，棋子回到原处，不转变角色
+                    if(new_chess.x !== prev_x || new_chess.y !== prev_y){
+
+                        _this.canChess = false;
+
+                        // 将信息传至服务器
+                        _this.socket.emit('chess', {chess:{
+                                                        role:new_chess.role,
+                                                        type:new_chess.type,
+                                                        text:new_chess.text,
+                                                        id:new_chess.id,
+                                                        x:new_chess.x,
+                                                        y:450-new_chess.y
+                                                    },id:_this.myId,room:_this.room},
+                            function () {
+                                //验证结果
+                                if(_this.checkResult(_this.curr_role)){
+                                    // 如果则赢了
+
+                                    _this.socket.emit('result',{room:_this.room});
+
+                                    // 重置游戏
+                                    _this.isUp=false;
+                                    _this.$curr=null;
+                                    _this.curr_role='';
+                                    _this.canChess =false;
+
+                                    _this._empty();
+                                    // 初始化棋子内容
+                                    _this._initChess();
+                                    // 绘制棋子
+                                    _this._drawChess();
+
+                                    alert('you win');
+
+                                    return;
+                                }
+                        });
+
+
+
+
+                    }
+
                     _this.$curr.removeClass('high-index');
                     _this.$curr = null
                     _this.isUp = false;
@@ -390,9 +450,9 @@
                     _this.isUp = true;
                 }
             })
-            $(document).on('mousemove',function (ev) {
+            $('body').on('mousemove','.chessman',function (ev) {
                 //console.log(document.getElementById('chess').getBoundingClientRect());
-                if(_this.$curr !== null){
+                if(_this.$curr != null){
                     var xx = ev.originalEvent.x || ev.originalEvent.layerX || 0;
                     var yy = ev.originalEvent.y || ev.originalEvent.layerY || 0;
                     _this.$curr.css({
@@ -753,6 +813,22 @@
                 });
 
             }
+        },
+        _empty:function () {
+            $(this.options.game_el).empty();
+        },
+        changeQipan:function (role) {
+
+            if(role != 'blue'){
+                return;
+            }
+            $(this.options.game_el).empty();
+            var arr = this.chessmans.blue.concat(this.chessmans.red);
+            for(var i = 0; i < arr.length; i++){
+                arr[i].y = 450-arr[i].y;
+            }
+            this._drawChess();
+
         },
         getRooms:function () {
           return this.rooms;

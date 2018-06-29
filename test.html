@@ -64,6 +64,8 @@
         document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
     }
 
+    var room = '';
+
     $('#login').on('click',function () {
         if($('#nickname').val() == ''){
             console.log('请输入昵称');
@@ -97,11 +99,18 @@
                 chess.myId = data.id;
                 chess.curr_role = data.role;
                 chess.canChess = data.canChess;
+                chess.room = data.room;
+
+                // 如果是蓝方，要转变棋盘
+                chess.changeQipan(chess.curr_role);
+
+
             })
             // 更新
             socket.on('fresh',function (data) {
                 console.log(data);
-                var arr = _this.chessmans[data.chess.role];
+
+                var arr = chess.chessmans[data.chess.role];
                 for(let i =0;i<arr.length;i++){
                     if(arr[i].id == data.chess.id){
                         arr[i].x = data.chess.x;
@@ -195,6 +204,26 @@
                 if(data.room.count == 2 && $('.startGame').length !=0){
                     $('.startGame').addClass('canStart');
                 }
+            })
+
+            // 监听游戏结束事件
+            socket.on('get_result',function (data) {
+                console.log('重置游戏');
+                alert('you lose');
+                // 重置游戏
+                chess.isUp=false;
+                chess.$curr=null;
+                chess.curr_role='';
+                chess.canChess =false;
+                chess.room={};
+
+                chess._empty();
+
+                // 初始化棋子内容
+                chess._initChess();
+                // 绘制棋子
+                chess._drawChess();
+
             })
         }).catch(function (error) {
             console.log(error);
