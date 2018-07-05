@@ -7,7 +7,6 @@
     float: left;
     width: 50%;
     height: 50%;
-    background: #f1f1f1;
     position: relative;
 }
 .content>div>div{
@@ -17,7 +16,7 @@
     background: deeppink;
     background-clip: padding-box;
     box-sizing: border-box;
-    transition: all 0.1s;
+    transition: all 0.05s;
 }
 .select{
     /*border: 5px solid rgba(0,0,0,0) !important;*/
@@ -27,6 +26,24 @@
 
 .sort1:before{
     content: '冒泡排序';
+    display: block;
+    left: 0;
+    top: 0;
+}
+.sort2:before{
+    content: '选择排序';
+    display: block;
+    left: 0;
+    top: 0;
+}
+.sort3:before{
+    content: '插入排序';
+    display: block;
+    left: 0;
+    top: 0;
+}
+.sort4:before{
+    content: '快速排序';
     display: block;
     left: 0;
     top: 0;

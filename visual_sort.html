@@ -215,8 +215,30 @@
             left:i*$('.sort').width()/arr.length+'px',
             height:arr[i]*$('.sort').height()/max+'px'
         })
-        $(div).attr('data-index',i);
+        var div1 = document.createElement('div');
+        $(div1).css({
+            width:$('.sort').width()/arr.length+'px',
+            left:i*$('.sort').width()/arr.length+'px',
+            height:arr[i]*$('.sort').height()/max+'px'
+        })
+        var div2 = document.createElement('div');
+        $(div2).css({
+            width:$('.sort').width()/arr.length+'px',
+            left:i*$('.sort').width()/arr.length+'px',
+            height:arr[i]*$('.sort').height()/max+'px'
+        })
+        var div3 = document.createElement('div');
+        $(div3).css({
+            width:$('.sort').width()/arr.length+'px',
+            left:i*$('.sort').width()/arr.length+'px',
+            height:arr[i]*$('.sort').height()/max+'px'
+        })
+
         $('.sort').eq(0).append(div);
+        $('.sort').eq(1).append(div1);
+        $('.sort').eq(2).append(div2);
+        $('.sort').eq(3).append(div3);
+
     }
 
 
@@ -298,7 +320,51 @@
         return r;
     });
 
+    var list1 = $('.sort').eq(1).children();
+    var i1 = 0;
+    var minIndex = i1;
+    var j1 = i1+1;
+    var timer2 = null;
+    timer2 = setInterval(function () {
 
+        $('.sort').eq(1).children().removeClass('select');
+        $('.sort').eq(1).children().eq(minIndex).addClass('select');
+        $('.sort').eq(1).children().eq(j1).addClass('select');
+
+        if($('.sort').eq(1).children().eq(j1).height()>$('.sort').eq(1).children().eq(minIndex).height()){
+            minIndex == j;
+
+            var temp = $('.sort').eq(1).children().eq(j1).css('left');
+            $('.sort').eq(1).children().eq(j1).css({
+                left:$('.sort').eq(1).children().eq(minIndex).css('left')+''
+            });
+
+            $('.sort').eq(1).children().eq(minIndex).css({
+                left:temp+''
+            });
+            // 交换元素
+            $('.sort').eq(1).children().eq(minIndex).insertBefore($('.sort').eq(1).children().eq(j1));
+
+            var $a = $('.sort').eq(1).children().eq(j1);
+
+            $('.sort').eq(1).children().eq(j1).remove();
+
+            $a.insertBefore($('.sort').eq(1).children().eq(minIndex));
+
+        }
+
+        j1++;
+        if(j1 == list1.length){
+            i1++;
+            minIndex = i1;
+            j1 = i1+1;
+        }
+        if(i1 == list1.length - 1){
+            clearInterval(timer2);
+        }
+
+
+    },200)
 
     // console.group('一般情况');
     // console.log(arr);
