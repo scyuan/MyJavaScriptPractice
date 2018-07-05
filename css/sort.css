@@ -1,0 +1,33 @@
+.content{
+    width: 1000px;
+    height: 800px;
+    margin: 0 auto;
+}
+.content>div{
+    float: left;
+    width: 50%;
+    height: 50%;
+    background: #f1f1f1;
+    position: relative;
+}
+.content>div>div{
+    position: absolute;
+    bottom: 0;
+    /*border: 1px solid rgba(0,0,0,0);*/
+    background: deeppink;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    transition: all 0.1s;
+}
+.select{
+    /*border: 5px solid rgba(0,0,0,0) !important;*/
+    background: crimson !important;
+    background-clip: padding-box !important;
+}
+
+.sort1:before{
+    content: '冒泡排序';
+    display: block;
+    left: 0;
+    top: 0;
+}

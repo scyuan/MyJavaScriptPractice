@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>可视化——排序</title>
+    <link type="text/css" rel="stylesheet" href="css/sort.css">
 </head>
 <body>
-
-
+    <div class="content">
+        <div class="sort sort1"></div>
+        <div class="sort sort2"></div>
+        <div class="sort sort3"></div>
+        <div class="sort sort4"></div>
+    </div>
+    <button onclick="BulbbleSortHtml();">ok</button>
+</body>
+<script src="js/jquery-3.2.0.min.js"></script>
 <script>
 
     function createRandomArr(l) {
@@ -184,18 +192,122 @@
         return a;
     }
 
-    var arr = createRandomArr(10);
+    function getMax(arr) {
+        var max = -1;
+        for(let i=0;i<arr.length;i++){
+            if(arr[i]>max){
+                max = arr[i]
+            }
+        }
+        return max;
+    }
+
+    var arr = createRandomArr(50);
+
+    var max = getMax(arr);
+
+
+
+    for(let i = 0; i< arr.length; i++){
+        var div = document.createElement('div');
+        $(div).css({
+            width:$('.sort').width()/arr.length+'px',
+            left:i*$('.sort').width()/arr.length+'px',
+            height:arr[i]*$('.sort').height()/max+'px'
+        })
+        $(div).attr('data-index',i);
+        $('.sort').eq(0).append(div);
+    }
+
+
+    // function BulbbleSortHtml() {
+    //     var list = $('.sort').eq(0).children();
+    //
+    //     for(let i=1;i<list.length;i++){
+    //         console.group(i);
+    //         for(let j = 0;j<list.length-i;j++){
+    //             console.log(j);
+    //             $('.sort').eq(0).children().removeClass('select');
+    //             $('.sort').eq(0).children().eq(j).addClass('select');
+    //             $('.sort').eq(0).children().eq(j+1).addClass('select');
+    //             if($('.sort').eq(0).children().eq(j).height()>$('.sort').eq(0).children().eq(j+1).height()){
+    //
+    //                 var temp = $('.sort').eq(0).children().eq(j).css('left');
+    //                 $('.sort').eq(0).children().eq(j).css({
+    //                     left:$('.sort').eq(0).children().eq(j+1).css('left')+''
+    //                 });
+    //
+    //                 $('.sort').eq(0).children().eq(j+1).css({
+    //                     left:temp+''
+    //                 });
+    //
+    //                 $('.sort').eq(0).children().eq(j+1).insertBefore($('.sort').eq(0).children().eq(j));
+    //             }
+    //
+    //         sleep(1000);
+    //         }
+    //     }
+    // }
+
+    var list = $('.sort').eq(0).children();
+    var i = 1;
+    var j = 0;
+    var timer1 = null;
+    timer1 = setInterval(function () {
+
+
+        $('.sort').eq(0).children().removeClass('select');
+        $('.sort').eq(0).children().eq(j).addClass('select');
+        $('.sort').eq(0).children().eq(j+1).addClass('select');
+        if($('.sort').eq(0).children().eq(j).height()>$('.sort').eq(0).children().eq(j+1).height()){
+
+            var temp = $('.sort').eq(0).children().eq(j).css('left');
+            $('.sort').eq(0).children().eq(j).css({
+                left:$('.sort').eq(0).children().eq(j+1).css('left')+''
+            });
+
+            $('.sort').eq(0).children().eq(j+1).css({
+                left:temp+''
+            });
+
+            $('.sort').eq(0).children().eq(j+1).insertBefore($('.sort').eq(0).children().eq(j));
+        }
+
+        j++;
+        if(j == list.length - i){
+            j=0;
+            i++;
+        }
+        if(i == list.length){
+            clearInterval(timer1);
+        }
+    },200)
+
+
+    function sleep(numberMillis) {
+        var now = new Date();
+        var exitTime = now.getTime() + numberMillis;
+        while (true) {
+            now = new Date();
+            if (now.getTime() > exitTime)
+                return;
+        }
+    }
+
     var arr1 = arr.map(function (r) {
         return r;
     });
-    console.group('一般情况');
-    console.log(arr);
+
+
+
+    // console.group('一般情况');
+    // console.log(arr);
     // console.log(BubbleSort(arr));
     // console.log(SelectSort(arr));
     // console.log(InsertSort(arr));
-    OptimizeQuickSort(arr1);
-    console.log(arr1);
+    // OptimizeQuickSort(arr1);
+    // console.log(arr1);
 
 </script>
-</body>
+
 </html>
