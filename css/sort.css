@@ -1,22 +1,36 @@
 .content{
-    width: 1000px;
-    height: 800px;
+    width: 1050px;
+    height: 850px;
     margin: 0 auto;
 }
 .content>div{
     float: left;
-    width: 50%;
-    height: 50%;
+    width: 500px;
+    height: 400px;
     position: relative;
+    /*transform: rotate(180deg);*/
 }
 .content>div>div{
-    position: absolute;
-    bottom: 0;
+    /*position: absolute;*/
+    position: relative;
+    /*bottom: 0;*/
+    /*bottom: 0;*/
     /*border: 1px solid rgba(0,0,0,0);*/
+    float: left;
     background: deeppink;
     background-clip: padding-box;
     box-sizing: border-box;
     transition: all 0.05s;
+}
+.sort1{
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
+.sort2{
+    border-bottom: 1px solid #000;
+}
+.sort3{
+    border-right: 1px solid #000;
 }
 .select{
     /*border: 5px solid rgba(0,0,0,0) !important;*/
@@ -25,24 +39,32 @@
 }
 
 .sort1:before{
+    position: absolute;
+    z-index: 99;
     content: '冒泡排序';
     display: block;
     left: 0;
     top: 0;
 }
 .sort2:before{
+    position: absolute;
+    z-index: 99;
     content: '选择排序';
     display: block;
     left: 0;
     top: 0;
 }
 .sort3:before{
+    position: absolute;
+    z-index: 99;
     content: '插入排序';
     display: block;
     left: 0;
     top: 0;
 }
 .sort4:before{
+    position: absolute;
+    z-index: 99;
     content: '快速排序';
     display: block;
     left: 0;

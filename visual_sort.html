@@ -212,25 +212,25 @@
         var div = document.createElement('div');
         $(div).css({
             width:$('.sort').width()/arr.length+'px',
-            left:i*$('.sort').width()/arr.length+'px',
+            // left:i*$('.sort').width()/arr.length+'px',
             height:arr[i]*$('.sort').height()/max+'px'
         })
         var div1 = document.createElement('div');
         $(div1).css({
             width:$('.sort').width()/arr.length+'px',
-            left:i*$('.sort').width()/arr.length+'px',
+            // left:i*$('.sort').width()/arr.length+'px',
             height:arr[i]*$('.sort').height()/max+'px'
         })
         var div2 = document.createElement('div');
         $(div2).css({
             width:$('.sort').width()/arr.length+'px',
-            left:i*$('.sort').width()/arr.length+'px',
+            // left:i*$('.sort').width()/arr.length+'px',
             height:arr[i]*$('.sort').height()/max+'px'
         })
         var div3 = document.createElement('div');
         $(div3).css({
             width:$('.sort').width()/arr.length+'px',
-            left:i*$('.sort').width()/arr.length+'px',
+            // left:i*$('.sort').width()/arr.length+'px',
             height:arr[i]*$('.sort').height()/max+'px'
         })
 
@@ -303,7 +303,7 @@
         if(i == list.length){
             clearInterval(timer1);
         }
-    },200)
+    },100)
 
 
     function sleep(numberMillis) {
@@ -344,15 +344,10 @@
             });
             // 交换元素
             $('.sort').eq(1).children().eq(minIndex).insertBefore($('.sort').eq(1).children().eq(j1));
-
             var $a = $('.sort').eq(1).children().eq(j1);
-
             $('.sort').eq(1).children().eq(j1).remove();
-
             $a.insertBefore($('.sort').eq(1).children().eq(minIndex));
-
         }
-
         j1++;
         if(j1 == list1.length){
             i1++;
@@ -362,9 +357,77 @@
         if(i1 == list1.length - 1){
             clearInterval(timer2);
         }
+    },100)
+
+    var list2 = $('.sort').eq(2).children();
+    var i2 = 1;
+    var j2 = 0;
+    var sorted_length = 1;
+    var timer3 = null;
+    timer3 = setInterval(function () {
+        var temp_l = sorted_length;
+        var exchange = false;
+        $('.sort').eq(2).children().removeClass('select');
+        $('.sort').eq(2).children().eq(i2).addClass('select');
+        $('.sort').eq(2).children().eq(j2).addClass('select');
+
+        if($('.sort').eq(2).children().eq(i2).height()<=$('.sort').eq(2).children().eq(j2).height()){
+
+            // var temp = $('.sort').eq(2).children().eq(j2).css('left');
+            //
+            // $('.sort').eq(2).children().eq(j2).css({
+            //     left:$('.sort').eq(2).children().eq(i2).css('left')+''
+            // });
+            //
+            // $('.sort').eq(2).children().eq(i2).css({
+            //     left:temp+''
+            // });
+
+            $('.sort').eq(2).children().eq(i2).insertBefore($('.sort').eq(2).children().eq(j2));
+
+            temp_l++;
+            exchange = true;
+            i2++;
+            j2=0;
 
 
-    },200)
+        }else if(j2 == sorted_length - 1){
+
+
+            // var temp = $('.sort').eq(2).children().eq(sorted_length).css('left');
+            //
+            // $('.sort').eq(2).children().eq(sorted_length).css({
+            //     left:$('.sort').eq(2).children().eq(i2).css('left')+''
+            // });
+            //
+            // $('.sort').eq(2).children().eq(i2).css({
+            //     left:temp+''
+            // });
+
+            $('.sort').eq(2).children().eq(i2).insertAfter($('.sort').eq(2).children().eq(j2));
+            temp_l++;
+            exchange = true;
+            i2++;
+            j2=0;
+        }
+        j2++;
+        if(j2 == sorted_length || exchange){
+            j2 = 0;
+        }
+        sorted_length = temp_l;
+        if(i2 == list2.length){
+            clearInterval(timer3);
+        }
+        // if(arr[i] <= new_arr[j]){
+        //     new_arr.splice(j,0,arr[i]);
+        //     break;
+        // }else if(j == new_arr.length - 1){
+        //     new_arr.push(arr[i]);
+        //     break;
+        // }
+
+
+    },100);
 
     // console.group('一般情况');
     // console.log(arr);
