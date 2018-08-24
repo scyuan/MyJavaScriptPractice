@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas水波浪</title>
+</head>
+<body>
+    <canvas id="wave" width="500" height="500"></canvas>
+
+
+    <script>
+        var canvas = document.getElementById('wave');
+        var ctx = canvas.getContext('2d');
+
+        // y = asin(bx+c)+d;
+        var a = 0, b=20, c=0.02 ,d=100;
+
+
+        function draw(){
+
+            d = d+0.1;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+
+            for(var x = 0; x < canvas.width; x += 20 / 500){
+                var y = b*Math.sin(c*x+d)+250;
+                ctx.lineTo(x,y);
+
+            }
+            ctx.lineTo(500,500);
+            ctx.lineTo(0,500);
+            ctx.lineTo(0,b*Math.sin(d)+250);
+            ctx.stroke();
+            ctx.fill();
+
+            requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+
+    </script>
+</body>
+</html>
