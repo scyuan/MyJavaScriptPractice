@@ -13,16 +13,18 @@
         var ctx = canvas.getContext('2d');
 
         // y = asin(bx+c)+d;
-        var a = 0, b=20, c=0.02 ,d=100;
+        var a = 0, b=10, b1=8, c=0.02 , c1=0.04, d=100, d1 = 120;
+
 
 
         function draw(){
 
-            d = d+0.1;
+            d = d+0.04;
+            d1 = d1+0.06;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
-
+            ctx.fillStyle='rgb(0,0,0)';
             for(var x = 0; x < canvas.width; x += 20 / 500){
                 var y = b*Math.sin(c*x+d)+250;
                 ctx.lineTo(x,y);
@@ -33,6 +35,24 @@
             ctx.lineTo(0,b*Math.sin(d)+250);
             ctx.stroke();
             ctx.fill();
+
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.fillStyle='rgba(0,0,0,0.8)';
+            for(var x = 0; x < canvas.width; x += 20 / 500){
+                var y = b1*Math.sin(c*x+d1)+250;
+                ctx.lineTo(x,y);
+
+            }
+            ctx.lineTo(500,500);
+            ctx.lineTo(0,500);
+            ctx.lineTo(0,b1*Math.sin(d1)+250);
+            ctx.stroke();
+
+            ctx.fill();
+            ctx.closePath();
+
 
             requestAnimationFrame(draw);
         }
